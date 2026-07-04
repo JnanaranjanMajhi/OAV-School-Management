@@ -25,6 +25,9 @@ export default function LoginPage() {
     if (user) {
       const path = user.role === 'admin' ? '/admin/dashboard' : user.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
       navigate(path, { replace: true });
+    } else {
+      // Ping backend to wake it up from cold start (Render free tier)
+      api.get('/school-info').catch(() => {});
     }
   }, [user, navigate]);
 

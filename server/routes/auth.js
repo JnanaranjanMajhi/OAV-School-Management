@@ -52,11 +52,11 @@ router.post(
         { upsert: true, new: true, setDefaultsOnInsert: true }
       );
 
-      // Send OTP
+      // Send OTP (Fire and forget so it doesn't block the response)
       if (type === 'email') {
-        await sendEmailOtp(identifier, otpCode);
+        sendEmailOtp(identifier, otpCode).catch(console.error);
       } else {
-        await sendSmsOtp(identifier, otpCode);
+        sendSmsOtp(identifier, otpCode).catch(console.error);
       }
 
       res.json({ success: true, message: `OTP sent to your ${type}` });

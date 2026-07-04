@@ -34,6 +34,13 @@ export default function RegisterPage() {
     }
   }, [emailTimer]);
 
+  useEffect(() => {
+    if (!user) {
+      // Ping backend to wake it up from cold start (Render free tier)
+      api.get('/school-info').catch(() => {});
+    }
+  }, [user]);
+
   const [form, setForm] = useState({
     name: '',
     email: '',
