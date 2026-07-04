@@ -600,6 +600,15 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 @media (max-width: 640px) {
   .why-choose-grid { grid-template-columns: 1fr; }
 }
+.results-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .results-layout { grid-template-columns: 1fr; }
+}
 .why-card {
   background: var(--bg-card);
   border: 1px solid var(--border);

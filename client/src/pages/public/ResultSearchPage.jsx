@@ -81,7 +81,7 @@ export default function ResultSearchPage() {
 
         <div className="container" style={{ padding: '1rem 1.5rem 4rem', position: 'relative', zIndex: 2 }}>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2.5rem', alignItems: 'start' }}>
+          <div className="results-layout">
             
             {/* Left Column: Dynamic Content */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -188,7 +188,7 @@ export default function ResultSearchPage() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
                     <select className="form-input" value={posClass} onChange={e => setPosClass(e.target.value)} style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--border)', padding: '0.8rem 1rem', borderRadius: 'var(--radius-sm)' }}>
                       <option value="">Select Class</option>
                       {CLASS_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
