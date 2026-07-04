@@ -114,11 +114,7 @@ export default function LoginPage() {
         </Link>
       </div>
 
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 10 }}>
-        <Link to="/" className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text)', border: '1px solid var(--border)', backdropFilter: 'blur(10px)' }}>
-          <ArrowLeft size={16} /> <span style={{ marginLeft: '0.25rem' }}>Back to Home</span>
-        </Link>
-      </div>
+
 
       <div className="login-container">
         <div className="login-card">
@@ -210,6 +206,10 @@ export default function LoginPage() {
           <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
             Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Register here</Link>
           </div>
+
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '1.5rem', color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--text)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
         </div>
       </div>
 
