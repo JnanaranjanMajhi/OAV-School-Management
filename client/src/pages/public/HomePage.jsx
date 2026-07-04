@@ -78,9 +78,7 @@ export default function HomePage() {
                 <Link to="/results" className="btn btn-primary btn-lg" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Trophy size={18} /> Check Results
                 </Link>
-                <Link to="/online-classes" className="btn btn-outline btn-lg" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', color: 'var(--text)' }}>
-                  <Monitor size={18} /> Online Classes
-                </Link>
+
               </div>
               
               <div className="hero-stats">
@@ -329,11 +327,11 @@ export default function HomePage() {
               <div className="section-tag">Quick Access</div>
               <h2>Student Services</h2>
             </div>
-            <div className="grid grid-4" style={{ display: 'grid' }}>
+            <div className="grid grid-3" style={{ display: 'grid' }}>
               {[
                 { icon: BookOpen, label: 'Check Results', desc: 'View your subject-wise marks', to: '/results', color: '#4f46e5' },
                 { icon: Users, label: 'Teachers', desc: 'Meet our faculty members', to: '/teachers', color: '#06b6d4' },
-                { icon: Calendar, label: 'Online Classes', desc: 'Access class links & tests', to: '/online-classes', color: '#10b981' },
+
                 { icon: Trophy, label: 'Downloads', desc: 'Syllabus, forms & notices', to: '/downloads', color: '#f59e0b' },
               ].map(({ icon: Icon, label, desc, to, color }) => (
                 <Link key={to} to={to} className="card quick-link-card" style={{ textAlign: 'center', textDecoration: 'none' }}>
