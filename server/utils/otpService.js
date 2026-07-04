@@ -16,6 +16,7 @@ exports.sendEmailOtp = async (email, otp) => {
         from: `OAV Balarampur <${process.env.SMTP_EMAIL}>`,
         to: email,
         subject: 'Your OAV Verification Code',
+        text: `Your OAV Balarampur verification code is: ${otp}\n\nThis code will expire in 10 minutes.`,
         html: `
           <!DOCTYPE html>
           <html>
