@@ -85,7 +85,7 @@ export default function HomePage() {
                 <div className="stat-item">
                   <div className="stat-icon" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Building size={24}/></div>
                   <div>
-                    <div className="stat-value">{info.establishedYear || '2016'}</div>
+                    <div className="stat-value">{info.establishedYear || '2020'}</div>
                     <div className="stat-label">ESTABLISHED</div>
                   </div>
                 </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
                 <div className="stat-item">
                   <div className="stat-icon" style={{ background: 'rgba(168,85,247,0.1)', color: '#a855f7' }}><GraduationCap size={24}/></div>
                   <div>
-                    <div className="stat-value">{info.affiliation || 'BSE Odisha'}</div>
+                    <div className="stat-value">{info.affiliation || 'CBSE'}</div>
                     <div className="stat-label">AFFILIATED</div>
                   </div>
                 </div>
