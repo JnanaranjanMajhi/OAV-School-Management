@@ -993,6 +993,13 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .modal { padding: 1.25rem; }
   .hero-nav { display: none; }
   .video-play-btn { width: 60px; height: 60px; }
+  
+  /* Additional UI tweaks for small screens */
+  .login-card { padding: 2rem 1.5rem; }
+  .login-container { padding: 1rem; }
+  .principal-message-card { padding: 2rem 1.25rem; gap: 1.5rem; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .dash-main { padding: 100px 0.5rem 1rem 0.5rem; }
 }
 
 /* ── Login Page UI ── */
