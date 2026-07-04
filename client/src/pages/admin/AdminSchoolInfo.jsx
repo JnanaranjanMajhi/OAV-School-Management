@@ -148,7 +148,7 @@ export default function AdminSchoolInfo() {
               <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                 <div style={{ position: 'relative', width: 56, height: 56, borderRadius: '50%', background: 'var(--bg-input)', border: '2px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
                   {form.principalPhoto ? (
-                    <img src={`${SERVER_URL}${form.principalPhoto}`} alt="Principal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={form.principalPhoto.startsWith('http') ? form.principalPhoto : `${SERVER_URL}${form.principalPhoto}`} alt="Principal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <UserCircle size={24} color="var(--text-muted)" />
                   )}

@@ -210,7 +210,7 @@ export default function TeacherDashboard() {
                 {photo ? (
                   <img src={URL.createObjectURL(photo)} alt="Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
                 ) : user?.photo ? (
-                  <img src={`${SERVER_URL}${user.photo}`} alt="Current" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+                  <img src={user.photo.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Current" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
                 ) : (
                   <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--bg-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                     {user?.name?.charAt(0).toUpperCase()}

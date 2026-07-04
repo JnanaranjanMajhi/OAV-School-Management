@@ -41,7 +41,7 @@ export default function TeachersPage() {
               <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', width: '100%', height: '100%', background: 'radial-gradient(ellipse at top, rgba(79,70,229,0.05) 0%, transparent 60%)', pointerEvents: 'none' }}></div>
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <div style={{ width: 110, height: 110, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', overflow: 'hidden', border: '4px solid var(--bg-card)', boxShadow: '0 0 0 4px rgba(79,70,229,0.3), 0 10px 20px rgba(0,0,0,0.1)', background: 'linear-gradient(135deg, var(--primary), var(--accent))' }}>
-                  {info.principalPhoto ? <img src={`${SERVER_URL}${info.principalPhoto}`} alt={info.principalName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <GraduationCap size={40} color="white" />}
+                  {info.principalPhoto ? <img src={info.principalPhoto.startsWith('http') ? info.principalPhoto : `${SERVER_URL}${info.principalPhoto}`} alt={info.principalName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <GraduationCap size={40} color="white" />}
                 </div>
                 <h2 style={{ fontSize: '1.3rem', marginBottom: '0.15rem' }}>{info.principalName}</h2>
                 <div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Principal</div>

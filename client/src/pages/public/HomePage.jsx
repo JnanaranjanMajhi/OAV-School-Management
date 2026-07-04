@@ -270,7 +270,7 @@ export default function HomePage() {
                 <div className="quote-icon-bg">”</div>
                 <div className="principal-photo-wrapper">
                   <div className="principal-photo-inner">
-                    {info.principalPhoto ? <img src={`${SERVER_URL}${info.principalPhoto}`} alt="Principal" /> : <GraduationCap size={50} color="white" />}
+                    {info.principalPhoto ? <img src={info.principalPhoto.startsWith('http') ? info.principalPhoto : `${SERVER_URL}${info.principalPhoto}`} alt="Principal" /> : <GraduationCap size={50} color="white" />}
                   </div>
                   <div className="principal-identity">
                     <h4>{info.principalName || 'Principal'}</h4>

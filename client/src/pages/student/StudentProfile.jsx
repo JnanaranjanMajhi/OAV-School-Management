@@ -53,7 +53,7 @@ export default function StudentProfile() {
                 {photo ? (
                   <img src={URL.createObjectURL(photo)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : user?.photo ? (
-                  <img src={`${SERVER_URL}${user.photo}`} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={user.photo.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <User size={48} color="var(--text-muted)" />

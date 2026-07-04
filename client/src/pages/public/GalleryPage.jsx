@@ -79,13 +79,13 @@ export default function GalleryPage() {
                 <div key={item._id} className="gallery-item" onClick={() => setLightbox(item)} style={{ cursor: 'pointer' }}>
                   {item.image?.match(/\.(mp4|webm|ogg)$/i) ? (
                     <>
-                      <video src={`${SERVER_URL}${item.image}`} muted loop playsInline autoPlay style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <video src={item.image.startsWith('http') ? item.image : `${SERVER_URL}${item.image}`} muted loop playsInline autoPlay style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'rgba(255,255,255,0.8)', zIndex: 1 }}>
                         <PlayCircle size={48} strokeWidth={1.5} />
                       </div>
                     </>
                   ) : (
-                    <img src={`${SERVER_URL}${item.image}`} alt={item.caption} loading="lazy" />
+                    <img src={item.image.startsWith('http') ? item.image : `${SERVER_URL}${item.image}`} alt={item.caption} loading="lazy" />
                   )}
                   <div className="gallery-item-overlay">
                     <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{item.caption}</span>
@@ -100,9 +100,9 @@ export default function GalleryPage() {
         <div className="modal-overlay" onClick={() => setLightbox(null)}>
           <div style={{ maxWidth: '90vw', maxHeight: '90vh', position: 'relative' }} onClick={e => e.stopPropagation()}>
             {lightbox.image?.match(/\.(mp4|webm|ogg)$/i) ? (
-              <video src={`${SERVER_URL}${lightbox.image}`} controls autoPlay style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }} />
+              <video src={lightbox.image.startsWith('http') ? lightbox.image : `${SERVER_URL}${lightbox.image}`} controls autoPlay style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }} />
             ) : (
-              <img src={`${SERVER_URL}${lightbox.image}`} alt={lightbox.caption} style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }} />
+              <img src={lightbox.image.startsWith('http') ? lightbox.image : `${SERVER_URL}${lightbox.image}`} alt={lightbox.caption} style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }} />
             )}
             <div style={{ textAlign: 'center', marginTop: '0.75rem', color: 'white', fontWeight: 600 }}>{lightbox.caption}</div>
             <button onClick={() => setLightbox(null)} style={{ position: 'absolute', top: -16, right: -16, background: 'var(--danger)', border: 'none', color: 'white', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
