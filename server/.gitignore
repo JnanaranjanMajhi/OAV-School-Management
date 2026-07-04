@@ -1,0 +1,27 @@
+# Environment variables — NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Uploaded files — ephemeral, don't commit
+uploads/
+
+# Debug / one-off scripts (not needed in production)
+check_db.js
+check_events.js
+check_students.js
+test_email.js
+updateAddress.js
+updateName.js
+updatePhoto.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
