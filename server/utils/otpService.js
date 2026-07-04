@@ -5,11 +5,15 @@ exports.sendEmailOtp = async (email, otp) => {
   if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
     try {
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
           user: process.env.SMTP_EMAIL,
           pass: process.env.SMTP_PASSWORD,
         },
+        connectionTimeout: 10000, // 10s timeout to prevent infinite spinning
+        socketTimeout: 10000,
       });
 
       const mailOptions = {
