@@ -929,14 +929,14 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .sidebar.open { transform: translateX(0); }
   .dash-main { margin-left: 0; padding: 110px 1rem 1rem 1rem; }
   
-  .nav-btn-register, .nav-btn-login { display: none !important; }
-  .navbar-logo-title { font-size: 1rem; }
-  .navbar-logo-subtitle { font-size: 0.65rem; }
-  .navbar-logo-img { width: 36px; height: 36px; }
+  .nav-btn-register, .nav-btn-login, .nav-btn-dash, .nav-btn-logout { display: none !important; }
+  .navbar-logo-title { font-size: 0.95rem; }
+  .navbar-logo-subtitle { display: none; }
+  .navbar-logo-img { width: 32px; height: 32px; }
   
   .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
-  .hero { padding: 100px 0 3rem; min-height: auto; }
+  .hero { padding: 100px 0 120px 0; min-height: auto; }
   
   h1 { font-size: 2.2rem; }
   h2 { font-size: 1.8rem; }
@@ -997,7 +997,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 @media (max-width: 480px) {
   h1 { font-size: 1.5rem; } /* even smaller for very small screens */
   h2 { font-size: 1.3rem; }
-  .navbar-inner { padding: 0 0.75rem; }
+  .navbar-inner { padding: 0 0.5rem; }
   .section { padding: 2rem 0; }
   .modal { padding: 1.25rem; }
   .gallery-nav { display: none; } /* hide on tiny screens to use dots instead */

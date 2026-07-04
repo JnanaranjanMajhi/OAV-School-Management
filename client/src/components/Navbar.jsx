@@ -63,7 +63,7 @@ export default function Navbar() {
         <div className="navbar-actions">
           {user ? (
             <>
-              <Link to={dashPath} className="btn btn-secondary btn-sm">
+              <Link to={dashPath} className="btn btn-secondary btn-sm nav-btn-dash">
                 <LayoutDashboard size={14} /> Dashboard
               </Link>
               <button 
@@ -71,7 +71,7 @@ export default function Navbar() {
                   logout();
                   navigate('/');
                 }} 
-                className="btn btn-sm" 
+                className="btn btn-sm nav-btn-logout" 
                 style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.2)' }}
               >
                 Logout
