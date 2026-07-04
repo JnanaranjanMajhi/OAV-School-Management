@@ -31,7 +31,7 @@ export default function Footer({ info }) {
           </div>
           <div>
             <h4 style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 700 }}>Academics</h4>
-            {[['/teachers', 'Teachers'], ['/online-classes', 'Online Classes'], ['/contact', 'Contact Us'], ['/login', 'Login Portal']].map(([to, label]) => (
+            {[['/teachers', 'Teachers'], ['/contact', 'Contact Us'], ['/login', 'Login Portal']].map(([to, label]) => (
               <Link key={to} to={to} className="footer-link">{label}</Link>
             ))}
           </div>
@@ -48,7 +48,7 @@ export default function Footer({ info }) {
           <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <span>© {new Date().getFullYear()} {s.schoolName || 'Odisha Adarsha Vidyalaya, Balarampur, Ranpur'}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span>Established {s.establishedYear || '2016'} · {s.affiliation || 'BSE Odisha'}</span>
+              <span>Established {s.establishedYear || '2020'} · {s.affiliation || 'CBSE'}</span>
               {s.website && <span>· <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Parent Organization: OAV Sangathan</a></span>}
             </span>
           </div>
