@@ -139,7 +139,7 @@ export default function LoginPage() {
             </div>
 
             <div className="login-field">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <label>Password</label>
                 <button type="button" className="forgot-btn" onClick={() => setShowForgotPw(true)}>
                   Forgot password?

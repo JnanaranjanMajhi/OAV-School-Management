@@ -203,7 +203,7 @@ export default function TeacherAttendance() {
           </div>
 
           <div className="table-wrap">
-            <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               <h3 style={{ fontSize: '1rem' }}>Student List</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <button className="btn btn-secondary btn-sm" onClick={handleMarkAllPresent}>Mark All Present</button>

@@ -1004,6 +1004,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .video-play-btn { width: 60px; height: 60px; }
   
   /* Additional UI tweaks for small screens */
+  .modal-content { padding: 1.25rem; }
   .login-card { padding: 2rem 1.5rem; }
   .login-container { padding: 1rem; }
   .principal-message-card { padding: 2rem 1.25rem; gap: 1.5rem; }

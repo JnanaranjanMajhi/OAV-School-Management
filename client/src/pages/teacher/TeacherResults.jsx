@@ -386,7 +386,7 @@ export default function TeacherResults() {
           </div>
 
           <div style={{ marginBottom: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.75rem' }}>
               <label style={{ ...labelStyle, marginBottom: 0 }}>Subjects</label>
               <button className="btn btn-secondary btn-sm" onClick={addSubject} style={{ padding: '0.4rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}><PlusCircle size={14} /> Add Subject</button>
             </div>
