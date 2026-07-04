@@ -947,28 +947,37 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .hero-actions .btn { width: 100%; justify-content: center; padding: 1rem; }
   
   .hero-stats { 
-    flex-direction: column; 
-    border-radius: var(--radius-lg); 
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    flex-direction: row; 
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 0; 
     padding: 0; 
     width: 100%; 
-    align-items: stretch;
-    margin-top: 2.5rem;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
   }
   .stat-item { 
-    width: 100%; 
-    justify-content: flex-start;
-    padding: 1.25rem;
-    border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    width: auto; 
+    justify-content: center;
+    padding: 0;
+    border: none;
+  }
+  [data-theme="light"] .hero-stats {
+    background: transparent;
+    box-shadow: none;
+    border: none;
   }
   [data-theme="light"] .stat-item {
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border: none;
   }
   .stat-item:last-child { border-bottom: none; }
   
-  .hero-nav { width: 36px; height: 36px; }
-  .hero-nav-prev { left: 0.75rem; }
-  .hero-nav-next { right: 0.75rem; }
+  .gallery-nav { width: 36px; height: 36px; }
+  .gallery-nav-prev { left: 0.75rem; }
+  .gallery-nav-next { right: 0.75rem; }
   .gallery-strip { grid-template-columns: 1fr; gap: 1rem; }
   .video-showcase { aspect-ratio: 16/10; }
   
@@ -986,12 +995,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   }
 }
 @media (max-width: 480px) {
-  h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.5rem; }
+  h1 { font-size: 1.5rem; } /* even smaller for very small screens */
+  h2 { font-size: 1.3rem; }
   .navbar-inner { padding: 0 0.75rem; }
-  .section { padding: 3rem 0; }
+  .section { padding: 2rem 0; }
   .modal { padding: 1.25rem; }
-  .hero-nav { display: none; }
+  .gallery-nav { display: none; } /* hide on tiny screens to use dots instead */
   .video-play-btn { width: 60px; height: 60px; }
   
   /* Additional UI tweaks for small screens */
@@ -1432,11 +1441,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 @media (max-width: 900px) {
   .principal-message-card {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2rem;
     padding: 3rem 2rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .principal-photo-wrapper {
+    order: 2;
+    margin-top: 1rem;
   }
   .principal-text-wrapper {
+    order: 1;
     border-left: none;
     padding-left: 0;
   }
