@@ -17,17 +17,32 @@ exports.sendEmailOtp = async (email, otp) => {
         to: email,
         subject: 'Your OAV Verification Code',
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
-            <h2 style="color: #4f46e5; text-align: center;">OAV Balarampur</h2>
-            <p style="font-size: 16px; color: #333;">Hello,</p>
-            <p style="font-size: 16px; color: #333;">Your email verification code is:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e293b; background: #f8fafc; padding: 15px 30px; border-radius: 8px; border: 1px dashed #cbd5e1;">${otp}</span>
-            </div>
-            <p style="font-size: 14px; color: #64748b; text-align: center;">This code will expire in 10 minutes.</p>
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
-            <p style="font-size: 12px; color: #94a3b8; text-align: center;">If you didn't request this code, you can safely ignore this email.</p>
-          </div>
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="center">
+                  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px 30px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                    <h2 style="color: #4f46e5; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 25px;">OAV Balarampur</h2>
+                    <p style="font-size: 16px; color: #334155; line-height: 1.5; margin-bottom: 10px;">Hello,</p>
+                    <p style="font-size: 16px; color: #334155; line-height: 1.5; margin-bottom: 25px;">Your email verification code is:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                      <span style="display: inline-block; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #0f172a; background: #f1f5f9; padding: 20px 40px; border-radius: 10px; border: 2px dashed #cbd5e1;">${otp}</span>
+                    </div>
+                    <p style="font-size: 14px; color: #64748b; text-align: center; margin-top: 30px;">This code will expire in 10 minutes.</p>
+                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+                    <p style="font-size: 12px; color: #94a3b8; text-align: center; line-height: 1.6;">If you didn't request this code, you can safely ignore this email.</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
         `,
       };
 
