@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Mail, Lock, Eye, EyeOff, Headset, ArrowRight, KeyRound } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Headset, ArrowRight, KeyRound, ArrowLeft } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import Modal from '../../components/Modal';
@@ -114,6 +114,12 @@ export default function LoginPage() {
         </Link>
       </div>
 
+      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 10 }}>
+        <Link to="/" className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text)', border: '1px solid var(--border)', backdropFilter: 'blur(10px)' }}>
+          <ArrowLeft size={16} /> <span style={{ marginLeft: '0.25rem' }}>Back to Home</span>
+        </Link>
+      </div>
+
       <div className="login-container">
         <div className="login-card">
           <div className="login-logo-center-wrapper">
@@ -199,6 +205,10 @@ export default function LoginPage() {
               <strong>Having trouble logging in?</strong>
               <span>Contact your school administrator<br/>for access credentials.</span>
             </div>
+          </div>
+
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+            Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Register here</Link>
           </div>
         </div>
       </div>
