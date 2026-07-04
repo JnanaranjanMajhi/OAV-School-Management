@@ -104,6 +104,31 @@ export default function Navbar() {
               {l.label}
             </NavLink>
           ))}
+          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {user ? (
+              <>
+                <Link to={dashPath} className="sidebar-link" onClick={() => setOpen(false)}>
+                  <LayoutDashboard size={18} /> Dashboard
+                </Link>
+                <button 
+                  onClick={() => { setOpen(false); logout(); navigate('/'); }} 
+                  className="sidebar-link" 
+                  style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/register" className="sidebar-link" onClick={() => setOpen(false)}>
+                  <UserPlus size={18} /> Register
+                </Link>
+                <Link to="/login" className="sidebar-link" style={{ background: 'var(--primary)', color: 'white' }} onClick={() => setOpen(false)}>
+                  <LogIn size={18} /> Login
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </nav>

@@ -921,13 +921,14 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hamburger { display: flex; }
+  .navbar-links { display: none; }
 }
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .dash-main { margin-left: 0; padding: 110px 1rem 1rem 1rem; }
-  .hamburger { display: flex; }
-  .navbar-links { display: none; }
+  .nav-btn-register { display: none !important; }
   .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .hero { padding: 80px 0 3rem; min-height: 90vh; }

@@ -5,7 +5,11 @@ export const CLASS_OPTIONS = [
   'Class 9',
   'Class 10',
   'Class 11 Science',
+  'Class 11 Commerce',
+  'Class 11 Arts',
   'Class 12 Science',
+  'Class 12 Commerce',
+  'Class 12 Arts',
 ];
 
 export const SUBJECT_OPTIONS = [
@@ -30,8 +34,8 @@ export const SUBJECTS_BY_CLASS = {
   'Class 6': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Computer/ICT', 'Art Education', 'Physical Education', 'General Knowledge'],
   'Class 7': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Computer/ICT', 'Art Education', 'Physical Education', 'General Knowledge'],
   'Class 8': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Computer/ICT', 'Art Education', 'Physical Education', 'General Knowledge'],
-  'Class 9': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Information Technology (Optional)', 'Art Education', 'Health & Physical Education'],
-  'Class 10': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Information Technology (Optional)', 'Art Education', 'Health & Physical Education'],
-  'Class 11 Science': ['English Core', 'Physics', 'Chemistry', 'Mathematics', 'Biology (if offered)', 'Computer Science', 'Physical Education'],
-  'Class 12 Science': ['English Core', 'Physics', 'Chemistry', 'Mathematics', 'Biology (if offered)', 'Computer Science', 'Physical Education'],
+  'Class 9': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Information Technology', 'Art Education', 'Health & Physical Education'],
+  'Class 10': ['English', 'Odia', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Information Technology', 'Art Education', 'Health & Physical Education'],
+  'Class 11 Science': ['English Core', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Physical Education'],
+  'Class 12 Science': ['English Core', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science', 'Physical Education'],
 };
