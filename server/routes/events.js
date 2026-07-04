@@ -53,11 +53,7 @@ router.post(
       if (location !== undefined) eventData.location = location;
       if (isPublic !== undefined) eventData.isPublic = isPublic;
       if (req.file) {
-        let folder = 'others';
-        if (req.file.mimetype.startsWith('image/')) folder = 'images';
-        else if (req.file.mimetype === 'application/pdf') folder = 'pdfs';
-        else if (req.file.mimetype.startsWith('video/')) folder = 'videos';
-        eventData.image = `/uploads/${folder}/${req.file.filename}`;
+        eventData.image = req.file.path;
       }
       const event = await Event.create(eventData);
       res.status(201).json({ success: true, data: event });
@@ -90,11 +86,7 @@ router.put(
       if (location !== undefined) eventData.location = location;
       if (isPublic !== undefined) eventData.isPublic = isPublic;
       if (req.file) {
-        let folder = 'others';
-        if (req.file.mimetype.startsWith('image/')) folder = 'images';
-        else if (req.file.mimetype === 'application/pdf') folder = 'pdfs';
-        else if (req.file.mimetype.startsWith('video/')) folder = 'videos';
-        eventData.image = `/uploads/${folder}/${req.file.filename}`;
+        eventData.image = req.file.path;
       }
       event = await Event.findByIdAndUpdate(req.params.id, eventData, { new: true, runValidators: true });
       res.json({ success: true, data: event });

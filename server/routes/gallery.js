@@ -27,7 +27,7 @@ router.post(
       if (!req.file) return res.status(400).json({ success: false, message: 'Image file is required' });
       const item = await Gallery.create({
         ...req.body,
-        image: `/uploads/images/${req.file.filename}`,
+        image: req.file.path,
         uploadedBy: req.user._id,
       });
       res.status(201).json({ success: true, data: item });

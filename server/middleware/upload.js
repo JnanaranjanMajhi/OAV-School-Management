@@ -1,94 +1,134 @@
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists
+// ─── Cloudinary Config ────────────────────────────────────────────────────────
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// ─── Cloudinary Storage ───────────────────────────────────────────────────────
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    let folder = 'oav/others';
+    let resource_type = 'auto';
+
+    if (file.mimetype.startsWith('image/')) {
+      folder = 'oav/images';
+      resource_type = 'image';
+    } else if (file.mimetype.startsWith('video/')) {
+      folder = 'oav/videos';
+      resource_type = 'video';
+    } else if (file.mimetype === 'application/pdf') {
+      folder = 'oav/pdfs';
+      resource_type = 'raw';
+    } else {
+      folder = 'oav/others';
+      resource_type = 'raw';
+    }
+
+    return { folder, resource_type };
+  },
+});
+
+// ─── Disk Storage (Excel-only, for temporary local parsing) ───────────────────
 const createUploadDir = (dir) => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 };
 
-// Allowlisted safe file extensions
-const SAFE_EXTENSIONS = new Set([
-  '.jpg', '.jpeg', '.png', '.gif', '.webp', // images
-  '.mp4', '.webm', '.ogg', '.mov',           // videos
-  '.pdf',                                    // documents
-  '.xls', '.xlsx', '.csv',                   // spreadsheets
-  '.doc', '.docx', '.ppt', '.pptx',          // office
-  '.txt', '.zip',                            // misc
-]);
+const SAFE_EXTENSIONS = new Set(['.xls', '.xlsx', '.csv']);
 
-// Storage config
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadPath = path.join(__dirname, '../uploads');
-    const mime = file.mimetype;
-
-    if (mime.startsWith('image/') || mime.startsWith('video/')) uploadPath = path.join(uploadPath, 'images');
-    else if (mime === 'application/pdf') uploadPath = path.join(uploadPath, 'pdfs');
-    else if (
-      mime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-      mime === 'application/vnd.ms-excel'
-    ) {
-      uploadPath = path.join(uploadPath, 'excel');
-    } else {
-      uploadPath = path.join(uploadPath, 'others');
-    }
-
+    const uploadPath = path.join(__dirname, '../uploads/excel');
     createUploadDir(uploadPath);
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    // Reject dangerous extensions regardless of MIME type
     if (!SAFE_EXTENSIONS.has(ext)) {
       return cb(new Error(`File extension "${ext}" is not allowed.`), false);
     }
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+    cb(null, `${file.fieldname}-${Date.now()}${ext}`);
   },
 });
 
-// File filter
-const fileFilter = (allowedTypes) => (req, file, cb) => {
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error(`File type not allowed. Allowed types: ${allowedTypes.join(', ')}`), false);
-  }
+// ─── File Filters ─────────────────────────────────────────────────────────────
+const imageFilter = (req, file, cb) => {
+  const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg'];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error(`File type not allowed. Allowed: ${allowed.join(', ')}`), false);
 };
 
-// Multer instances
-const uploadImage = multer({
-  storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB (increased for video)
-  fileFilter: fileFilter(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg']),
-});
-
-const uploadFile = multer({
-  storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-  fileFilter: fileFilter([
+const fileFilter = (req, file, cb) => {
+  const allowed = [
     'application/pdf',
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'text/csv',
-  ]),
-});
+  ];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error(`File type not allowed. Allowed: ${allowed.join(', ')}`), false);
+};
 
-// uploadAny is used for notices/messages — restrict to safe types and 10MB
-const uploadAny = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-  fileFilter: fileFilter([
+const anyFilter = (req, file, cb) => {
+  const allowed = [
     'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    'video/mp4', 'video/webm', 'video/ogg',
     'application/pdf',
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'text/csv',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ]),
+  ];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error(`File type not allowed.`), false);
+};
+
+const excelFilter = (req, file, cb) => {
+  const allowed = [
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/csv',
+  ];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error('Please upload an Excel or CSV file.'), false);
+};
+
+// ─── Multer Instances ─────────────────────────────────────────────────────────
+
+// For images & videos → Cloudinary
+const uploadImage = multer({
+  storage: cloudinaryStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: imageFilter,
 });
 
-module.exports = { uploadImage, uploadFile, uploadAny };
+// For PDFs & docs → Cloudinary (permanent storage)
+const uploadFile = multer({
+  storage: cloudinaryStorage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  fileFilter: fileFilter,
+});
 
+// For mixed uploads (notices, messages, events) → Cloudinary
+const uploadAny = multer({
+  storage: cloudinaryStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: anyFilter,
+});
+
+// For Excel bulk imports → Disk (read locally then discard)
+const uploadExcel = multer({
+  storage: diskStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: excelFilter,
+});
+
+module.exports = { uploadImage, uploadFile, uploadAny, uploadExcel };

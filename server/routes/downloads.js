@@ -1,16 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
 const Download = require('../models/Download');
 const { protect, authorize } = require('../middleware/auth');
 const { uploadFile } = require('../middleware/upload');
 const logActivity = require('../middleware/logger');
 
-// Helper: convert an absolute upload path to a URL-safe relative path
-const toFileUrl = (absPath) => {
-  const relative = path.relative(path.join(__dirname, '..'), absPath);
-  return '/' + relative.replace(/\\/g, '/');
-};
 
 
 router.get('/', async (req, res, next) => {
@@ -44,7 +38,7 @@ router.post(
       if (!req.file) return res.status(400).json({ success: false, message: 'File is required' });
       const item = await Download.create({
         ...req.body,
-        fileUrl: toFileUrl(req.file.path),
+        fileUrl: req.file.path,
         fileName: req.file.originalname,
         fileType: req.file.mimetype,
         uploadedBy: req.user._id,
@@ -77,7 +71,7 @@ router.put(
       let updateData = { ...req.body };
       
       if (req.file) {
-        updateData.fileUrl = toFileUrl(req.file.path);
+        updateData.fileUrl = req.file.path;
         updateData.fileName = req.file.originalname;
         updateData.fileType = req.file.mimetype;
       }

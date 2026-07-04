@@ -3,7 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
-const { uploadImage, uploadFile } = require('../middleware/upload');
+const { uploadImage, uploadFile, uploadExcel } = require('../middleware/upload');
 const { parseExcelStudents, parseExcelTeachers } = require('../utils/excelParser');
 const logActivity = require('../middleware/logger');
 
@@ -85,7 +85,7 @@ router.post(
         phone: req.body.phone || '',
       };
       if (req.file) {
-        allowedFields.photo = `/uploads/images/${req.file.filename}`;
+        allowedFields.photo = req.file.path;
       }
       if (role === 'student') {
         allowedFields.class = req.body.class || '';
@@ -114,7 +114,7 @@ router.post(
   '/upload-students',
   protect,
   authorize('admin'),
-  uploadFile.single('file'),
+  uploadExcel.single('file'),
   logActivity('UPLOAD_STUDENTS', 'users'),
   async (req, res, next) => {
     try {
@@ -176,7 +176,7 @@ router.post(
   '/upload-teachers',
   protect,
   authorize('admin'),
-  uploadFile.single('file'),
+  uploadExcel.single('file'),
   logActivity('UPLOAD_TEACHERS', 'users'),
   async (req, res, next) => {
     try {
@@ -273,7 +273,7 @@ router.put(
       const updateData = {};
       allowed.forEach(f => { if (req.body[f] !== undefined) updateData[f] = req.body[f]; });
       if (req.file) {
-        updateData.photo = `/uploads/images/${req.file.filename}`;
+        updateData.photo = req.file.path;
       }
       
       const user = await User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true });
@@ -334,7 +334,7 @@ router.put(
       const updateData = {};
       allowed.forEach(f => { if (req.body[f] !== undefined) updateData[f] = req.body[f]; });
       if (req.file) {
-        updateData.photo = `/uploads/images/${req.file.filename}`;
+        updateData.photo = req.file.path;
       }
 
       // Don't update password through this route

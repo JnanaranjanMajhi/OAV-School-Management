@@ -133,12 +133,7 @@ router.post('/', protect, uploadAny.single('media'), async (req, res, next) => {
     };
 
     if (hasMedia) {
-      let folder = 'others';
-      if (req.file.mimetype.startsWith('image/')) folder = 'images';
-      else if (req.file.mimetype === 'application/pdf') folder = 'pdfs';
-      else if (req.file.mimetype.includes('spreadsheet') || req.file.mimetype.includes('excel')) folder = 'excel';
-      
-      messageData.mediaUrl = `/uploads/${folder}/${req.file.filename}`;
+      messageData.mediaUrl = req.file.path;
       messageData.mediaType = req.file.mimetype;
     }
 

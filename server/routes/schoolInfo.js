@@ -71,7 +71,7 @@ router.put(
     try {
       const updateData = { ...req.body };
       if (req.file) {
-        updateData.principalPhoto = `/uploads/images/${req.file.filename}`;
+        updateData.principalPhoto = req.file.path;
       }
       // Parse socialLinks if sent as JSON string
       if (typeof updateData.socialLinks === 'string') {

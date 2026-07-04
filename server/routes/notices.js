@@ -50,7 +50,7 @@ router.post('/', protect, authorize('admin', 'teacher'), uploadAny.single('file'
     }
     const noticeData = { title, body, targetRole, targetClass, postedBy: req.user._id };
     if (req.file) {
-      noticeData.file = '/uploads/' + req.file.path.split(/[\\/]uploads[\\/]/)[1].replace(/\\/g, '/');
+      noticeData.file = req.file.path;
     }
     const notice = await Notice.create(noticeData);
     res.status(201).json({ success: true, data: notice });
@@ -66,7 +66,7 @@ router.put('/:id', protect, authorize('admin', 'teacher'), uploadAny.single('fil
     }
     const updateData = { ...req.body };
     if (req.file) {
-      updateData.file = '/uploads/' + req.file.path.split(/[\\/]uploads[\\/]/)[1].replace(/\\/g, '/');
+      updateData.file = req.file.path;
     }
     const updated = await Notice.findByIdAndUpdate(req.params.id, updateData, { new: true });
     res.json({ success: true, data: updated });
