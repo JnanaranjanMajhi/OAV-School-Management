@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Users, Calendar, Megaphone, Image, Download,
   FileSpreadsheet, BookOpen, Settings, MapPin, ScrollText, LogOut,
-  Menu, X, GraduationCap, ClipboardList, Bell, Video, CheckSquare, MessageSquare, Globe, ChevronDown, Shield
+  Menu, X, GraduationCap, ClipboardList, Bell, Video, CheckSquare, MessageSquare, Globe, ChevronDown, Shield, Camera
 } from 'lucide-react';
 import Navbar from './Navbar';
-import { SERVER_URL } from '../api/axios';
+import api, { SERVER_URL } from '../api/axios';
+import { toast } from 'react-hot-toast';
 
 const adminLinks = [
   { section: 'Overview', items: [
@@ -71,7 +72,7 @@ const studentLinks = [
 ];
 
 export default function DashboardLayout({ children }) {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -90,6 +91,22 @@ export default function DashboardLayout({ children }) {
 
   const sidebarRef = useRef(null);
   const mainRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const toastId = toast.loading('Uploading photo...');
+    try {
+      const fd = new FormData();
+      fd.append('photo', file);
+      const { data } = await api.put('/users/update-profile', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      updateUser(data.data);
+      toast.success('Profile photo updated!', { id: toastId });
+    } catch (err) {
+      toast.error('Failed to upload photo', { id: toastId });
+    }
+  };
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -131,13 +148,23 @@ export default function DashboardLayout({ children }) {
             className="sidebar-scroll"
           >
             <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid var(--border)', marginBottom: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 'bold', overflow: 'hidden', boxShadow: '0 4px 10px rgba(79,70,229,0.2)' }}>
+            <div 
+              style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 'bold', overflow: 'hidden', boxShadow: '0 4px 10px rgba(79,70,229,0.2)', position: 'relative', cursor: 'pointer' }}
+              onClick={() => fileInputRef.current?.click()}
+              title="Click to update profile photo"
+              className="sidebar-avatar"
+            >
+              <input type="file" ref={fileInputRef} onChange={handlePhotoUpload} accept="image/*" style={{ display: 'none' }} />
               {user?.photo ? (
                 <img src={user.photo.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 user?.name?.charAt(0).toUpperCase() || <Users size={30} />
               )}
+              <div className="avatar-overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s' }}>
+                <Camera size={20} color="white" />
+              </div>
             </div>
+            <style>{`.sidebar-avatar:hover .avatar-overlay { opacity: 1 !important; }`}</style>
             <div style={{ textAlign: 'center' }}>
             <div style={{ fontFamily: 'Outfit', fontWeight: 700, fontSize: '1.1rem' }} className="gradient-text">
               {user?.name}
