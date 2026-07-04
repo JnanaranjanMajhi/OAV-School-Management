@@ -5,41 +5,69 @@ const path = require('path');
 const fs = require('fs');
 
 // ─── Cloudinary Config ────────────────────────────────────────────────────────
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
 
-// ─── Cloudinary Storage ───────────────────────────────────────────────────────
-const cloudinaryStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    let folder = 'oav/others';
-    let resource_type = 'auto';
+if (hasCloudinary) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
-    if (file.mimetype.startsWith('image/')) {
-      folder = 'oav/images';
-      resource_type = 'image';
-    } else if (file.mimetype.startsWith('video/')) {
-      folder = 'oav/videos';
-      resource_type = 'video';
-    } else if (file.mimetype === 'application/pdf') {
-      folder = 'oav/pdfs';
-      resource_type = 'raw';
-    } else {
-      folder = 'oav/others';
-      resource_type = 'raw';
-    }
-
-    return { folder, resource_type };
-  },
-});
-
-// ─── Disk Storage (Excel-only, for temporary local parsing) ───────────────────
+// ─── Local Disk Storage (Fallback & Excel) ───────────────────────────────────
 const createUploadDir = (dir) => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 };
+
+const localMediaStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let folder = 'others';
+    if (file.mimetype.startsWith('image/')) folder = 'images';
+    else if (file.mimetype.startsWith('video/')) folder = 'videos';
+    else if (file.mimetype === 'application/pdf') folder = 'pdfs';
+    
+    const uploadPath = path.join(__dirname, '../uploads', folder);
+    createUploadDir(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `${file.fieldname}-${Date.now()}${ext}`);
+  },
+});
+
+// ─── Cloudinary Storage ───────────────────────────────────────────────────────
+let cloudinaryStorage;
+if (hasCloudinary) {
+  cloudinaryStorage = new CloudinaryStorage({
+    cloudinary,
+    params: async (req, file) => {
+      let folder = 'oav/others';
+      let resource_type = 'auto';
+
+      if (file.mimetype.startsWith('image/')) {
+        folder = 'oav/images';
+        resource_type = 'image';
+      } else if (file.mimetype.startsWith('video/')) {
+        folder = 'oav/videos';
+        resource_type = 'video';
+      } else if (file.mimetype === 'application/pdf') {
+        folder = 'oav/pdfs';
+        resource_type = 'raw';
+      } else {
+        folder = 'oav/others';
+        resource_type = 'raw';
+      }
+
+      return { folder, resource_type };
+    },
+  });
+}
+
+const activeStorage = hasCloudinary ? cloudinaryStorage : localMediaStorage;
+
+// ─── Disk Storage (Excel-only, for temporary local parsing) ───────────────────
 
 const SAFE_EXTENSIONS = new Set(['.xls', '.xlsx', '.csv']);
 
@@ -103,23 +131,23 @@ const excelFilter = (req, file, cb) => {
 
 // ─── Multer Instances ─────────────────────────────────────────────────────────
 
-// For images & videos → Cloudinary
+// For images & videos
 const uploadImage = multer({
-  storage: cloudinaryStorage,
+  storage: activeStorage,
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
   fileFilter: imageFilter,
 });
 
-// For PDFs & docs → Cloudinary (permanent storage)
+// For PDFs & docs
 const uploadFile = multer({
-  storage: cloudinaryStorage,
+  storage: activeStorage,
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
   fileFilter: fileFilter,
 });
 
-// For mixed uploads (notices, messages, events) → Cloudinary
+// For mixed uploads (notices, messages, events)
 const uploadAny = multer({
-  storage: cloudinaryStorage,
+  storage: activeStorage,
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
   fileFilter: anyFilter,
 });
@@ -131,4 +159,29 @@ const uploadExcel = multer({
   fileFilter: excelFilter,
 });
 
-module.exports = { uploadImage, uploadFile, uploadAny, uploadExcel };
+const wrapMulter = (multerInstance) => {
+  return {
+    single: (field) => {
+      const uploadMw = multerInstance.single(field);
+      return (req, res, next) => {
+        uploadMw(req, res, (err) => {
+          if (err) return next(err);
+          if (req.file && req.file.path && !req.file.path.startsWith('http')) {
+            const norm = req.file.path.replace(/\\/g, '/');
+            if (norm.includes('/uploads/')) {
+              req.file.path = '/uploads/' + norm.split('/uploads/')[1];
+            }
+          }
+          next();
+        });
+      };
+    }
+  };
+};
+
+module.exports = { 
+  uploadImage: wrapMulter(uploadImage), 
+  uploadFile: wrapMulter(uploadFile), 
+  uploadAny: wrapMulter(uploadAny), 
+  uploadExcel: wrapMulter(uploadExcel) 
+};
