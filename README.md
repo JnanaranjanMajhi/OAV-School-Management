@@ -457,30 +457,6 @@ The application implements several backend security measures:
 
 ---
 
-## 📸 Application Screenshots
-
-Project screenshots can be added from the `media` directory.
-
-### Home Page
-
-```html
-<p align="center">
-  <img src="./media/home.png" width="850" alt="OAV School Management Home Page">
-</p>
-```
-
-### Application Dashboard
-
-```html
-<p align="center">
-  <img src="./media/dashboard.png" width="850" alt="OAV School Management Dashboard">
-</p>
-```
-
-> Update the image filenames according to the actual files available inside the `media` folder.
-
----
-
 ## 🌍 Deployment
 
 The application can be deployed using the following services:
@@ -514,7 +490,6 @@ Potential improvements for future versions include:
 * Examination and result management
 * Online assignment submission
 * Parent dashboard
-* Teacher dashboard
 * Student performance analytics
 * Interactive academic reports
 * Online fee management
