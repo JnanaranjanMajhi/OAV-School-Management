@@ -554,9 +554,14 @@ git push origin feature/your-feature-name
 
 ## 📄 License
 
-This project is developed for educational and school-management purposes.
+This project is licensed under the **MIT License**.
 
-If you want others to use, modify, and contribute to the project, you can add an MIT License.
+You are free to use, modify, and distribute this project in accordance with the terms of the license.
+
+For more information, see the [`LICENSE`](./LICENSE) file.
+
+---
+
 
 ---
 
