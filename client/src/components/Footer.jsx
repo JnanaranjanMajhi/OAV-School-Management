@@ -12,10 +12,10 @@ export default function Footer({ info }) {
           <div>
             <div className="flex items-center gap-1 mb-2" style={{ fontSize: '1.2rem', fontFamily: 'Outfit', fontWeight: 800 }}>
               <GraduationCap size={22} color="#818cf8" />
-              <span className="gradient-text">{s.schoolName || 'OAV Balarampur'}</span>
+              <span className="gradient-text">{s.schoolName || 'Whispering Pines School'}</span>
             </div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.7, maxWidth: 260 }}>
-              {s.tagline || 'Odisha Adarsha Vidyalaya — Excellence in Education'}
+              {s.tagline || 'Whispering Pines School — Excellence in Every Step'}
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
               {s.socialLinks?.facebook && <a href={s.socialLinks.facebook} className="footer-social"><Share2 size={18} /></a>}
@@ -46,7 +46,7 @@ export default function Footer({ info }) {
         </div>
         <div className="footer-bottom" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <span>© {new Date().getFullYear()} {s.schoolName || 'Odisha Adarsha Vidyalaya, Balarampur, Ranpur'}. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} {s.schoolName || 'Whispering Pines School'}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <span>Established {s.establishedYear || '2020'} · {s.affiliation || 'CBSE'}</span>
               {s.website && <span>· <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Parent Organization: OAV Sangathan</a></span>}

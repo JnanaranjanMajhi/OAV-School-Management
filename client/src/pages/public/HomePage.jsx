@@ -8,9 +8,9 @@ import { GraduationCap, BookOpen, Users, Trophy, Calendar, ChevronRight, Star, C
 import usePageTitle from '../../hooks/usePageTitle';
 
 const defaultGalleryImages = [
-  { src: '/Image_1.jpg', alt: 'Odisha Adarsha Vidyalaya Campus - Flag Ceremony' },
-  { src: '/Image_2.jpg', alt: 'OAV Balarampur - Campus View' },
-  { src: '/Image_3.jpg', alt: 'OAV Balarampur - Activities' },
+  { src: '/Image_1.jpg', alt: 'Whispering Pines School - Flag Ceremony' },
+  { src: '/Image_2.jpg', alt: 'Whispering Pines School - Campus View' },
+  { src: '/Image_3.jpg', alt: 'Whispering Pines School - Activities' },
 ];
 
 export default function HomePage() {
@@ -34,7 +34,7 @@ export default function HomePage() {
         setInfo(infoRes.data?.data || {});
         setEvents(eventsRes.data?.data || []);
         setAnnouncements(annRes.data?.data || []);
-        
+
         if (galleryRes.data?.data?.length > 0) {
           const fetchedImages = galleryRes.data.data.map(item => ({
             src: `${SERVER_URL}${item.image}`,
@@ -71,7 +71,7 @@ export default function HomePage() {
             <div className="hero-content">
 
               <h1>
-                Shaping <span className="text-primary">Tomorrow's</span><br/>Leaders Today
+                Shaping <span className="text-primary">Tomorrow's</span><br />Leaders Today
               </h1>
               <p className="hero-desc">Inspiring Excellence. Building Character. Empowering Future Leaders through quality residential education under the Government of Odisha.</p>
               <div className="hero-actions">
@@ -80,10 +80,10 @@ export default function HomePage() {
                 </Link>
 
               </div>
-              
+
               <div className="hero-stats">
                 <div className="stat-item">
-                  <div className="stat-icon" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Building size={24}/></div>
+                  <div className="stat-icon" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Building size={24} /></div>
                   <div>
                     <div className="stat-value">{info.establishedYear || '2020'}</div>
                     <div className="stat-label">ESTABLISHED</div>
@@ -91,7 +91,7 @@ export default function HomePage() {
                 </div>
                 <div className="stat-divider"></div>
                 <div className="stat-item">
-                  <div className="stat-icon" style={{ background: 'rgba(168,85,247,0.1)', color: '#a855f7' }}><GraduationCap size={24}/></div>
+                  <div className="stat-icon" style={{ background: 'rgba(168,85,247,0.1)', color: '#a855f7' }}><GraduationCap size={24} /></div>
                   <div>
                     <div className="stat-value">{info.affiliation || 'CBSE'}</div>
                     <div className="stat-label">AFFILIATED</div>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 </div>
                 <div className="stat-divider"></div>
                 <div className="stat-item">
-                  <div className="stat-icon" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}><Users size={24}/></div>
+                  <div className="stat-icon" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}><Users size={24} /></div>
                   <div>
                     <div className="stat-value">1000+</div>
                     <div className="stat-label">STUDENTS</div>
@@ -108,7 +108,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          
+
           <div className="wave-divider">
             <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
               <path d="M0,0 C320,120 420,120 720,60 C1020,0 1120,0 1440,60 L1440,120 L0,120 Z" fill="currentColor"></path>
@@ -122,29 +122,29 @@ export default function HomePage() {
             <div className="why-choose-layout">
               <div className="why-choose-text">
                 <div className="hero-badge" style={{ marginBottom: '1.5rem', display: 'inline-flex' }}>
-                  <Star size={14} /> Why Choose OAV Balarampur?
+                  <Star size={14} /> Why Choose Whispering Pines School?
                 </div>
-                <h2>Nurturing <span className="text-primary">Excellence.</span><br/>Building Futures.</h2>
+                <h2>Nurturing <span className="text-primary">Excellence.</span><br />Building Futures.</h2>
                 <p>We provide an environment that fosters learning, leadership, and lifelong values.</p>
               </div>
               <div className="why-choose-grid">
                 <div className="why-card">
-                  <div className="why-icon" style={{ color: '#3b82f6', background: 'rgba(59,130,246,0.1)' }}><BookOpen size={24}/></div>
+                  <div className="why-icon" style={{ color: '#3b82f6', background: 'rgba(59,130,246,0.1)' }}><BookOpen size={24} /></div>
                   <h3>Academic Excellence</h3>
                   <p>Quality education with a focus on conceptual understanding and real-world learning.</p>
                 </div>
                 <div className="why-card">
-                  <div className="why-icon" style={{ color: '#a855f7', background: 'rgba(168,85,247,0.1)' }}><Users size={24}/></div>
+                  <div className="why-icon" style={{ color: '#a855f7', background: 'rgba(168,85,247,0.1)' }}><Users size={24} /></div>
                   <h3>Experienced Faculty</h3>
                   <p>Dedicated teachers committed to shaping bright and responsible citizens.</p>
                 </div>
                 <div className="why-card">
-                  <div className="why-icon" style={{ color: '#22c55e', background: 'rgba(34,197,94,0.1)' }}><Building size={24}/></div>
+                  <div className="why-icon" style={{ color: '#22c55e', background: 'rgba(34,197,94,0.1)' }}><Building size={24} /></div>
                   <h3>Residential Campus</h3>
                   <p>Safe, secure, and disciplined environment for holistic student development.</p>
                 </div>
                 <div className="why-card">
-                  <div className="why-icon" style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)' }}><Award size={24}/></div>
+                  <div className="why-icon" style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)' }}><Award size={24} /></div>
                   <h3>All-Round Growth</h3>
                   <p>Encouraging sports, culture, and co-curricular activities for overall personality development.</p>
                 </div>
@@ -205,7 +205,7 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-              
+
               {/* Carousel controls */}
               <button className="gallery-nav gallery-nav-prev" onClick={prevSlide} aria-label="Previous slide">
                 <ChevronLeft size={24} />
@@ -213,7 +213,7 @@ export default function HomePage() {
               <button className="gallery-nav gallery-nav-next" onClick={nextSlide} aria-label="Next slide">
                 <ChevronRight size={24} />
               </button>
-              
+
               <div className="gallery-dots">
                 {galleryImages.map((_, i) => (
                   <button
@@ -225,7 +225,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            
+
             <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
               <Link to="/gallery" className="btn btn-secondary">View Full Gallery <ChevronRight size={14} /></Link>
             </div>

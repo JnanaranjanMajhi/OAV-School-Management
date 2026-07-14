@@ -23,13 +23,13 @@ export default function StudentResults() {
       .finally(() => setLoading(false));
   }, [user]);
 
-//   const getGradeColor = (percentage) => {
-//     if (percentage >= 90) return 'var(--success)';
-//     if (percentage >= 75) return 'var(--primary-light)';
-//     if (percentage >= 60) return 'var(--accent)';
-//     if (percentage >= 40) return 'var(--warning)';
-//     return 'var(--danger)';
-//   };
+  //   const getGradeColor = (percentage) => {
+  //     if (percentage >= 90) return 'var(--success)';
+  //     if (percentage >= 75) return 'var(--primary-light)';
+  //     if (percentage >= 60) return 'var(--accent)';
+  //     if (percentage >= 40) return 'var(--warning)';
+  //     return 'var(--danger)';
+  //   };
 
   const getGrade = (percentage) => {
     if (percentage >= 90) return 'A+';
@@ -48,20 +48,20 @@ export default function StudentResults() {
     const autoTable = autoTableModule.default || autoTableModule;
 
     const doc = new jsPDF();
-    
+
     // Header
     doc.setFontSize(22);
     doc.setTextColor(79, 70, 229); // Primary color
-    doc.text('OAV Balarampur', 105, 20, { align: 'center' });
-    
+    doc.text('Whispering Pines School', 105, 20, { align: 'center' });
+
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
     doc.text('Official Student Report Card', 105, 28, { align: 'center' });
-    
+
     // Line separator
     doc.setDrawColor(200, 200, 200);
     doc.line(20, 35, 190, 35);
-    
+
     // Student Info
     doc.setFontSize(12);
     doc.setTextColor(51, 51, 51);
@@ -69,17 +69,17 @@ export default function StudentResults() {
     doc.text(`Class: ${result.class || user?.class || '—'}`, 20, 53);
     doc.text(`Roll Number: ${result.student?.rollNumber || user?.rollNumber || '—'}`, 120, 45);
     doc.text(`Examination: ${result.examType || 'Terminal Examination'}`, 120, 53);
-    
+
     // Table
     const tableColumn = ["Subject", "Max Marks", "Marks Obtained", "Percentage", "Grade"];
     const tableRows = [];
-    
+
     const subjects = result.student?.subjects || [];
     subjects.forEach(sub => {
       const max = sub.totalMarks || sub.maxMarks || 100;
       const mark = sub.marks || 0;
       const pct = max > 0 ? Math.round((mark / max) * 100) : 0;
-      
+
       tableRows.push([
         sub.subject || sub.name,
         max.toString(),
@@ -101,27 +101,27 @@ export default function StudentResults() {
 
     // Summary Box
     const finalY = doc.lastAutoTable.finalY + 15;
-    
+
     doc.setDrawColor(79, 70, 229);
     doc.setFillColor(248, 250, 252);
     doc.roundedRect(20, finalY, 170, 30, 3, 3, 'FD');
-    
+
     doc.setFontSize(12);
     doc.setTextColor(51, 51, 51);
     doc.text(`Total Marks: ${totalMarks} / ${totalMax}`, 30, finalY + 12);
     doc.text(`Aggregate Percentage: ${overallPct}%`, 30, finalY + 22);
-    
+
     doc.setFontSize(14);
     doc.setTextColor(79, 70, 229);
     doc.text(`Overall Grade: ${getGrade(overallPct)}`, 130, finalY + 17);
-    
+
     // Footer
     doc.setFontSize(9);
     doc.setTextColor(150, 150, 150);
     doc.text('This is a computer-generated document. No signature is required.', 105, 280, { align: 'center' });
 
     // Save PDF
-    doc.save(`OAV_ReportCard_${user?.name?.replace(/\s+/g, '_') || 'Student'}.pdf`);
+    doc.save(`WhisperingPines_ReportCard_${user?.name?.replace(/\s+/g, '_') || 'Student'}.pdf`);
   };
 
   return (
@@ -156,15 +156,15 @@ export default function StudentResults() {
             const isExpanded = expandedResultId === idx;
 
             return (
-              <div 
-                key={studentData._id || idx} 
-                className="card-elevated" 
+              <div
+                key={studentData._id || idx}
+                className="card-elevated"
                 style={{ borderRadius: 'var(--radius-md)', background: 'var(--bg-card)', border: 'none', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.3s' }}
                 onClick={() => setExpandedResultId(isExpanded ? null : idx)}
               >
                 <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent))', padding: '1.5rem', color: 'white', position: 'relative' }}>
                   <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', filter: 'blur(30px)' }} />
-                  
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
                     <div>
                       <h3 style={{ fontSize: '1.35rem', fontWeight: 800, fontFamily: 'Outfit', marginBottom: '0.2rem' }}>
@@ -176,12 +176,12 @@ export default function StudentResults() {
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           generatePDF(result, overallPct, totalMarks, totalMax);
                         }}
-                        className="btn" 
+                        className="btn"
                         style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', background: 'white', color: 'var(--primary)', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: 'transform 0.2s' }}
                         onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}

@@ -39,16 +39,19 @@ export default function Navbar() {
 
   const dashPath = user?.role === 'admin' ? '/admin/dashboard'
     : user?.role === 'teacher' ? '/teacher/dashboard'
-    : '/student/dashboard';
+      : '/student/dashboard';
 
   return (
     <nav className={`navbar ${!show ? 'navbar-hidden' : ''}`} role="navigation" aria-label="Main Navigation">
       <div className="navbar-inner">
         <Link to="/" className="navbar-logo">
-          <img src="/logo.jpg" alt="OAV Logo" className="navbar-logo-img" />
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <img src="/logo.jpg" alt="Whispering Pines School Logo" className="navbar-logo-img" />
+            <span style={{ position: 'absolute', bottom: '-6px', right: '-8px', background: '#f59e0b', color: '#fff', fontSize: '0.45rem', fontWeight: 700, padding: '1px 4px', borderRadius: '4px', lineHeight: 1.4, letterSpacing: '0.03em', whiteSpace: 'nowrap', textTransform: 'uppercase' }}>Unofficial</span>
+          </div>
           <div className="navbar-logo-text">
-            <span className="navbar-logo-title">OAV Balarampur</span>
-            <span className="navbar-logo-subtitle">Odisha Adarsha Vidyalaya</span>
+            <span className="navbar-logo-title">Whispering Pines School</span>
+            <span className="navbar-logo-subtitle">Excellence in Every Step</span>
           </div>
         </Link>
 
@@ -66,12 +69,12 @@ export default function Navbar() {
               <Link to={dashPath} className="btn btn-secondary btn-sm nav-btn-dash">
                 <LayoutDashboard size={14} /> Dashboard
               </Link>
-              <button 
+              <button
                 onClick={() => {
                   logout();
                   navigate('/');
-                }} 
-                className="btn btn-sm nav-btn-logout" 
+                }}
+                className="btn btn-sm nav-btn-logout"
                 style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.2)' }}
               >
                 Logout
@@ -110,9 +113,9 @@ export default function Navbar() {
                 <Link to={dashPath} className="sidebar-link" onClick={() => setOpen(false)}>
                   <LayoutDashboard size={18} /> Dashboard
                 </Link>
-                <button 
-                  onClick={() => { setOpen(false); logout(); navigate('/'); }} 
-                  className="sidebar-link" 
+                <button
+                  onClick={() => { setOpen(false); logout(); navigate('/'); }}
+                  className="sidebar-link"
                   style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}
                 >
                   Logout
