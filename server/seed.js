@@ -53,7 +53,7 @@ const seed = async () => {
         schoolName: 'Whispering Pines School',
         tagline: 'Whispering Pines School — Excellence in Every Step',
         overview: 'Whispering Pines School is a premier residential school committed to academic excellence, character development, and holistic growth of every student. We provide quality education with modern infrastructure in a nurturing environment.',
-        principalName: 'John Doe',
+        principalName: 'Principal',
         principalMessage: 'Welcome to Whispering Pines School! Our mission is to create a vibrant learning environment where every student can discover their potential, develop critical thinking skills, and grow into responsible citizens of tomorrow.',
         establishedYear: '2016',
         affiliation: 'BSE Odisha',
