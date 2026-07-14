@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const schoolInfoSchema = new mongoose.Schema(
   {
     isSingleton: { type: Boolean, default: true, unique: true },
-    schoolName: { type: String, default: 'Odisha Adarsha Vidyalaya, Balarampur, Ranpur' },
-    tagline: { type: String, default: 'Odisha Adarsha Vidyalaya — Excellence in Education' },
+    schoolName: { type: String, default: 'Whispering Pines School' },
+    tagline: { type: String, default: 'Whispering Pines School — Excellence in Every Step' },
     overview: { type: String, default: '' },
     principalName: { type: String, default: '' },
     principalMessage: { type: String, default: '' },

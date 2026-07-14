@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏫 OAV School Management System
+# 🏫 Whispering Pines School Management System
 
 ### A Modern Full-Stack Digital School Management Platform
 
@@ -22,7 +22,7 @@ A secure, responsive, and feature-rich school management application designed to
 
 ## 📖 About the Project
 
-The **OAV School Management System** is a full-stack web application developed to provide a centralized digital platform for managing school-related activities and information.
+The **Whispering Pines School Management System** is a full-stack web application developed to provide a centralized digital platform for managing school-related activities and information.
 
 The platform is designed to improve communication, simplify administrative work, organize academic information, and provide students, teachers, and administrators with convenient access to important school services.
 

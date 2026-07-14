@@ -71,7 +71,7 @@ export default function AdminSchoolInfo() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
             <div style={{ gridColumn: '1 / -1' }}>
               <label style={labelStyle}>School Name</label>
-              <input style={inputStyle} value={form.schoolName || ''} onChange={e => set('schoolName', e.target.value)} placeholder="E.g., Odisha Adarsha Vidyalaya" />
+              <input style={inputStyle} value={form.schoolName || ''} onChange={e => set('schoolName', e.target.value)} placeholder="E.g., Whispering Pines School" />
             </div>
             <div style={{ gridColumn: '1 / -1' }}>
               <label style={labelStyle}>Tagline</label>

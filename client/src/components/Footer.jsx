@@ -49,7 +49,7 @@ export default function Footer({ info }) {
             <span>© {new Date().getFullYear()} {s.schoolName || 'Whispering Pines School'}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <span>Established {s.establishedYear || '2020'} · {s.affiliation || 'CBSE'}</span>
-              {s.website && <span>· <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Parent Organization: OAV Sangathan</a></span>}
+              {s.website && <span>· <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Parent Organization: Whispering Pines Trust</a></span>}
             </span>
           </div>
           {isHomePage && (

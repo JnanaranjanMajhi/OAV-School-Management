@@ -15,7 +15,7 @@ exports.sendEmailOtp = async (email, otp) => {
         <tr>
           <td align="center">
             <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px 30px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-              <h2 style="color: #4f46e5; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 25px;">OAV Balarampur</h2>
+              <h2 style="color: #4f46e5; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 25px;">Whispering Pines School</h2>
               <p style="font-size: 16px; color: #334155; line-height: 1.5; margin-bottom: 10px;">Hello,</p>
               <p style="font-size: 16px; color: #334155; line-height: 1.5; margin-bottom: 25px;">Your email verification code is:</p>
               <div style="text-align: center; margin: 30px 0;">
@@ -31,15 +31,15 @@ exports.sendEmailOtp = async (email, otp) => {
     </body>
     </html>
   `;
-  const textContent = `Your OAV Balarampur verification code is: ${otp}\n\nThis code will expire in 10 minutes.`;
+  const textContent = `Your Whispering Pines School verification code is: ${otp}\n\nThis code will expire in 10 minutes.`;
 
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const { data, error } = await resend.emails.send({
-        from: 'OAV Balarampur <onboarding@resend.dev>',
+        from: 'Whispering Pines School <onboarding@resend.dev>',
         to: email,
-        subject: 'Your OAV Verification Code',
+        subject: 'Your Whispering Pines School Verification Code',
         text: textContent,
         html: htmlContent
       });
@@ -76,9 +76,9 @@ exports.sendEmailOtp = async (email, otp) => {
       });
 
       const mailOptions = {
-        from: `OAV Balarampur <${process.env.SMTP_EMAIL}>`,
+        from: `Whispering Pines School <${process.env.SMTP_EMAIL}>`,
         to: email,
-        subject: 'Your OAV Verification Code',
+        subject: 'Your Whispering Pines School Verification Code',
         text: textContent,
         html: htmlContent,
       };
@@ -102,7 +102,7 @@ exports.sendEmailOtp = async (email, otp) => {
     console.log(`\n========================================`);
     console.log(`📧 MOCK EMAIL SENT`);
     console.log(`To: ${email}`);
-    console.log(`Subject: Your OAV Verification Code`);
+    console.log(`Subject: Your Whispering Pines School Verification Code`);
     console.log(`Body: Your email verification code is: ${otp}. It will expire in 10 minutes.`);
     console.log(`========================================\n`);
     return true;
@@ -114,7 +114,7 @@ exports.sendSmsOtp = async (phone, otp) => {
     try {
       const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
       await client.messages.create({
-        body: `Your OAV Balarampur verification code is: ${otp}`,
+        body: `Your Whispering Pines School verification code is: ${otp}`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phone,
       });
@@ -129,7 +129,7 @@ exports.sendSmsOtp = async (phone, otp) => {
     console.log(`\n========================================`);
     console.log(`📱 MOCK SMS SENT`);
     console.log(`To: ${phone}`);
-    console.log(`Message: Your OAV Balarampur verification code is: ${otp}`);
+    console.log(`Message: Your Whispering Pines School verification code is: ${otp}`);
     console.log(`========================================\n`);
     return true;
   }

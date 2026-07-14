@@ -50,18 +50,18 @@ const seed = async () => {
     const infoExists = await SchoolInfo.findOne();
     if (!infoExists) {
       await SchoolInfo.create({
-        schoolName: 'Odisha Adarsha Vidyalaya, Balarampur, Ranpur',
-        tagline: 'Odisha Adarsha Vidyalaya — Excellence in Education',
-        overview: 'Odisha Adarsha Vidyalaya, Balarampur, Ranpur is a premier residential school under the Government of Odisha, committed to academic excellence, character development, and holistic growth of every student. Established under the Odisha Adarsha Vidyalaya scheme, we provide quality education with modern infrastructure in a nurturing environment.',
-        principalName: 'Principal',
-        principalMessage: 'Welcome to Odisha Adarsha Vidyalaya, Balarampur! Our mission is to create a vibrant learning environment where every student can discover their potential, develop critical thinking skills, and grow into responsible citizens of tomorrow.',
+        schoolName: 'Whispering Pines School',
+        tagline: 'Whispering Pines School — Excellence in Every Step',
+        overview: 'Whispering Pines School is a premier residential school committed to academic excellence, character development, and holistic growth of every student. We provide quality education with modern infrastructure in a nurturing environment.',
+        principalName: 'John Doe',
+        principalMessage: 'Welcome to Whispering Pines School! Our mission is to create a vibrant learning environment where every student can discover their potential, develop critical thinking skills, and grow into responsible citizens of tomorrow.',
         establishedYear: '2016',
         affiliation: 'BSE Odisha',
         address: 'Balarampur, Ranpur',
         city: 'Ranpur',
         state: 'Odisha',
         phone: '',
-        email: '',
+        email: 'contact@whisperingpines.edu',
       });
       console.log('✅ School info seeded');
     } else {

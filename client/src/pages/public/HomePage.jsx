@@ -38,7 +38,7 @@ export default function HomePage() {
         if (galleryRes.data?.data?.length > 0) {
           const fetchedImages = galleryRes.data.data.map(item => ({
             src: `${SERVER_URL}${item.image}`,
-            alt: item.caption || 'OAV Gallery Image'
+            alt: item.caption || 'School Gallery Image'
           }));
           setGalleryImages(fetchedImages);
         }
@@ -159,7 +159,7 @@ export default function HomePage() {
             <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               <div className="section-tag">🎬 Campus Life</div>
               <h2>Experience Our Vidyalaya</h2>
-              <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', maxWidth: 500, margin: '0.5rem auto 0' }}>A glimpse into the vibrant life at Odisha Adarsha Vidyalaya, Balarampur</p>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', maxWidth: 500, margin: '0.5rem auto 0' }}>A glimpse into the vibrant life at Whispering Pines School</p>
             </div>
             <div className="video-showcase">
               {!showVideo ? (
