@@ -111,7 +111,24 @@ export default function TeacherResults() {
   const setSubject = (idx, key, value) => {
     setForm(p => {
       const subjects = [...p.subjects];
-      subjects[idx] = { ...subjects[idx], [key]: value };
+      let val = value;
+      if (key === 'marks' && value !== '') {
+        const numericVal = Number(value);
+        const maxVal = Number(subjects[idx].totalMarks) || 100;
+        if (numericVal > maxVal) {
+          toast.error(`Marks cannot exceed total marks (${maxVal})`);
+          val = String(maxVal);
+        } else if (numericVal < 0) {
+          val = '0';
+        }
+      } else if (key === 'totalMarks' && value !== '') {
+        const newMax = Number(value);
+        const currentMarks = Number(subjects[idx].marks);
+        if (currentMarks > newMax) {
+          subjects[idx].marks = String(newMax);
+        }
+      }
+      subjects[idx] = { ...subjects[idx], [key]: val };
       return { ...p, subjects };
     });
   };
