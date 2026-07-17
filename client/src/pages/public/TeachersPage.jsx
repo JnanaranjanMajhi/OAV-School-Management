@@ -70,7 +70,7 @@ export default function TeachersPage() {
               {teachers.map(t => (
                 <div key={t._id} className="teacher-card">
                   <div className="teacher-avatar">
-                    {t.photo ? <img src={`${SERVER_URL}${t.photo}`} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} /> : t.name?.[0]?.toUpperCase()}
+                    {t.photo ? <img src={t.photo.startsWith('http') ? t.photo : `${SERVER_URL}${t.photo}`} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} /> : t.name?.[0]?.toUpperCase()}
                   </div>
                   <h3 style={{ fontSize: '1rem', marginBottom: '0.25rem' }}>{t.name}</h3>
                   {t.subject && <span className="badge badge-primary" style={{ marginBottom: '0.5rem' }}>{t.subject}</span>}

@@ -99,7 +99,7 @@ export default function DownloadsPage() {
                       </div>
                     </div>
                   </div>
-                  <a href={`${SERVER_URL}${item.fileUrl}`} download={item.fileName} className="btn" style={{ flexShrink: 0, padding: '0.75rem 1.5rem', background: 'linear-gradient(135deg, var(--primary), var(--accent))', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 600, boxShadow: '0 8px 20px rgba(79,70,229,0.25)' }}>
+                  <a href={item.fileUrl.startsWith('http') ? item.fileUrl : `${SERVER_URL}${item.fileUrl}`} download={item.fileName} className="btn" style={{ flexShrink: 0, padding: '0.75rem 1.5rem', background: 'linear-gradient(135deg, var(--primary), var(--accent))', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontWeight: 600, boxShadow: '0 8px 20px rgba(79,70,229,0.25)' }}>
                     <Download size={18} style={{ marginRight: '0.5rem' }} /> Download
                   </a>
                 </div>

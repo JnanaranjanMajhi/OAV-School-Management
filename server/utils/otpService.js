@@ -48,7 +48,7 @@ exports.sendEmailOtp = async (email, otp) => {
         console.error('Resend error:', error);
         throw new Error(error.message);
       }
-      
+
       console.log(`📧 RESEND EMAIL SENT to ${email}, ID: ${data.id}`);
       return true;
     } catch (error) {

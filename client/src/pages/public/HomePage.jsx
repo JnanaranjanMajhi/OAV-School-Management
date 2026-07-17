@@ -37,7 +37,7 @@ export default function HomePage() {
 
         if (galleryRes.data?.data?.length > 0) {
           const fetchedImages = galleryRes.data.data.map(item => ({
-            src: `${SERVER_URL}${item.image}`,
+            src: item.image.startsWith('http') ? item.image : `${SERVER_URL}${item.image}`,
             alt: item.caption || 'School Gallery Image'
           }));
           setGalleryImages(fetchedImages);
