@@ -7,6 +7,9 @@ const logActivity = require('../middleware/logger');
 
 
 
+const https = require('https');
+const path = require('path');
+
 router.get('/', async (req, res, next) => {
   try {
     const { category, class: cls } = req.query;
@@ -25,6 +28,35 @@ router.get('/', async (req, res, next) => {
       .sort({ createdAt: -1 });
     res.json({ success: true, count: items.length, data: items });
   } catch (error) { next(error); }
+});
+
+router.get('/download/:id', async (req, res, next) => {
+  try {
+    const item = await Download.findById(req.params.id);
+    if (!item) return res.status(404).json({ success: false, message: 'File not found' });
+
+    const fileUrl = item.fileUrl;
+    const fileName = item.fileName || 'download';
+
+    if (fileUrl.startsWith('http')) {
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName.replace(/"/g, '\\"')}"`);
+      res.setHeader('Content-Type', item.fileType || 'application/octet-stream');
+      
+      https.get(fileUrl, (stream) => {
+        if (stream.statusCode !== 200) {
+          return res.status(stream.statusCode).json({ success: false, message: 'Failed to download file from storage' });
+        }
+        stream.pipe(res);
+      }).on('error', (err) => {
+        next(err);
+      });
+    } else {
+      const absolutePath = path.join(__dirname, '..', fileUrl);
+      res.download(absolutePath, fileName);
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post(

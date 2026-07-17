@@ -209,7 +209,7 @@ export default function StudentDownloads() {
                         <div style={{ marginTop: 'auto' }}>
                           {dl.fileUrl ? (
                             <a
-                              href={dl.fileUrl.startsWith('http') ? dl.fileUrl : `${SERVER_URL}${dl.fileUrl.startsWith('/') ? '' : '/'}${dl.fileUrl}`}
+                              href={`${SERVER_URL}/api/downloads/download/${dl._id}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{

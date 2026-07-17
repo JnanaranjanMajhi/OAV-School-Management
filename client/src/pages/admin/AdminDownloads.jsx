@@ -107,7 +107,7 @@ export default function AdminDownloads() {
                     <td style={{ padding: '1.25rem 1rem', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {d.fileUrl && (
-                          <a href={d.fileUrl.startsWith('http') ? d.fileUrl : `${SERVER_URL}${d.fileUrl.startsWith('/') ? '' : '/'}${d.fileUrl}`} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', padding: '0.5rem 0.75rem', display: 'flex', gap: '0.35rem', borderRadius: 'var(--radius-sm)' }}>
+                          <a href={`${SERVER_URL}/api/downloads/download/${d._id}`} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', padding: '0.5rem 0.75rem', display: 'flex', gap: '0.35rem', borderRadius: 'var(--radius-sm)' }}>
                             <Download size={14} /> <span style={{ fontSize: '0.8rem' }}>Get</span>
                           </a>
                         )}
