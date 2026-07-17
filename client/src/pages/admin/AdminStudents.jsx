@@ -422,6 +422,14 @@ export default function AdminStudents() {
                             )}
                             <button
                               className="btn btn-secondary btn-sm"
+                              onClick={() => setResetPw(s)}
+                              title="Reset password"
+                              style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)' }}
+                            >
+                              <KeyRound size={16} />
+                            </button>
+                            <button
+                              className="btn btn-secondary btn-sm"
                               onClick={() => openEdit(s)}
                               title="Edit student"
                               style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)' }}
