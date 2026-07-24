@@ -84,7 +84,8 @@ const parseExcelResults = async (filePath, className) => {
 
     // Extract subjects (everything that's not a meta field)
     const metaFields = ['name', 'student name', 'student', 'roll', 'roll no', 'roll number',
-      'rollno', 'total', 'total marks', 'percentage', 'percent', 'grade', 'position', 'rank', 'class'];
+      'rollno', 'total', 'total marks', 'percentage', 'percent', 'grade', 'position', 'rank', 'class',
+      'attendance', 'att', 'remarks', 'remark', 'teacher remarks', 'comments'];
 
     const subjects = [];
     let computedTotal = 0;
@@ -107,6 +108,8 @@ const parseExcelResults = async (filePath, className) => {
       (maxTotal > 0 ? parseFloat(((totalMarks / maxTotal) * 100).toFixed(2)) : 0);
 
     const grade = normalized['grade'] || calculateGrade(percentage);
+    const attendance = normalized['attendance'] || normalized['att'] || '';
+    const remarks = normalized['remarks'] || normalized['remark'] || normalized['teacher remarks'] || normalized['comments'] || '';
 
     students.push({
       name: String(name).trim(),
@@ -118,6 +121,8 @@ const parseExcelResults = async (filePath, className) => {
       percentage,
       grade,
       position: null, // calculated later
+      attendance: String(attendance).trim(),
+      remarks: String(remarks).trim(),
     });
   });
 

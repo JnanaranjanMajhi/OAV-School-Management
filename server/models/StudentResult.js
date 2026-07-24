@@ -17,6 +17,8 @@ const studentResultSchema = new mongoose.Schema({
   percentage: { type: Number },
   grade: { type: String },
   position: { type: Number },
+  attendance: { type: String, default: '' },
+  remarks: { type: String, default: '' },
 });
 
 studentResultSchema.index({ rollNumber: 1, name: 1 });
