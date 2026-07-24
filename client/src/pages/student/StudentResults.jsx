@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { FileSpreadsheet, Trophy, TrendingUp, Download, ChevronDown, ChevronUp, Award } from 'lucide-react';
-import ReportCardModal from '../../components/ReportCardModal';
+import { FileSpreadsheet, Trophy, TrendingUp, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { generateReportCardPDF } from '../../utils/pdfGenerator';
 
 export default function StudentResults() {
   const { user } = useAuth();
   const [results, setResults] = useState([]);
+  const [schoolInfo, setSchoolInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedResultId, setExpandedResultId] = useState(0);
-  const [activeReport, setActiveReport] = useState(null);
 
   useEffect(() => {
+    api.get('/school-info').then(r => setSchoolInfo(r.data.data || {})).catch(() => {});
     if (!user) return;
     const params = new URLSearchParams();
     if (user.name) params.append('name', user.name);
@@ -43,87 +44,8 @@ export default function StudentResults() {
     return 'F';
   };
 
-  const generatePDF = async (result, overallPct, totalMarks, totalMax) => {
-    // Lazy-load PDF libraries only when the user clicks download
-    const { jsPDF } = await import('jspdf');
-    const autoTableModule = await import('jspdf-autotable');
-    const autoTable = autoTableModule.default || autoTableModule;
-
-    const doc = new jsPDF();
-
-    // Header
-    doc.setFontSize(22);
-    doc.setTextColor(79, 70, 229); // Primary color
-    doc.text('Whispering Pines School', 105, 20, { align: 'center' });
-
-    doc.setFontSize(12);
-    doc.setTextColor(100, 100, 100);
-    doc.text('Official Student Report Card', 105, 28, { align: 'center' });
-
-    // Line separator
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, 35, 190, 35);
-
-    // Student Info
-    doc.setFontSize(12);
-    doc.setTextColor(51, 51, 51);
-    doc.text(`Student Name: ${user?.name || '—'}`, 20, 45);
-    doc.text(`Class: ${result.class || user?.class || '—'}`, 20, 53);
-    doc.text(`Roll Number: ${result.student?.rollNumber || user?.rollNumber || '—'}`, 120, 45);
-    doc.text(`Examination: ${result.examType || 'Terminal Examination'}`, 120, 53);
-
-    // Table
-    const tableColumn = ["Subject", "Max Marks", "Marks Obtained", "Percentage", "Grade"];
-    const tableRows = [];
-
-    const subjects = result.student?.subjects || [];
-    subjects.forEach(sub => {
-      const max = sub.totalMarks || sub.maxMarks || 100;
-      const mark = sub.marks || 0;
-      const pct = max > 0 ? Math.round((mark / max) * 100) : 0;
-
-      tableRows.push([
-        sub.subject || sub.name,
-        max.toString(),
-        mark.toString(),
-        `${pct}%`,
-        getGrade(pct)
-      ]);
-    });
-
-    autoTable(doc, {
-      startY: 65,
-      head: [tableColumn],
-      body: tableRows,
-      theme: 'grid',
-      headStyles: { fillColor: [79, 70, 229] },
-      styles: { fontSize: 10, cellPadding: 6 },
-      alternateRowStyles: { fillColor: [248, 250, 252] },
-    });
-
-    // Summary Box
-    const finalY = doc.lastAutoTable.finalY + 15;
-
-    doc.setDrawColor(79, 70, 229);
-    doc.setFillColor(248, 250, 252);
-    doc.roundedRect(20, finalY, 170, 30, 3, 3, 'FD');
-
-    doc.setFontSize(12);
-    doc.setTextColor(51, 51, 51);
-    doc.text(`Total Marks: ${totalMarks} / ${totalMax}`, 30, finalY + 12);
-    doc.text(`Aggregate Percentage: ${overallPct}%`, 30, finalY + 22);
-
-    doc.setFontSize(14);
-    doc.setTextColor(79, 70, 229);
-    doc.text(`Overall Grade: ${getGrade(overallPct)}`, 130, finalY + 17);
-
-    // Footer
-    doc.setFontSize(9);
-    doc.setTextColor(150, 150, 150);
-    doc.text('This is a computer-generated document. No signature is required.', 105, 280, { align: 'center' });
-
-    // Save PDF
-    doc.save(`WhisperingPines_ReportCard_${user?.name?.replace(/\s+/g, '_') || 'Student'}.pdf`);
+  const generatePDF = (result) => {
+    generateReportCardPDF(result, schoolInfo);
   };
 
   return (
@@ -181,15 +103,14 @@ export default function StudentResults() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setActiveReport({
-                            studentResult: { ...studentData, name: user?.name || studentData.name, rollNumber: studentData.rollNumber || user?.rollNumber, class: result.class || user?.class },
-                            batch: { title: result.title, examType: result.examType, academicYear: result.academicYear, class: result.class }
-                          });
+                          generatePDF(result, overallPct, totalMarks, totalMax);
                         }}
                         className="btn"
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: '#0b1e36', color: '#ffffff', border: '1px solid #f59e0b', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(11,30,54,0.3)' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', background: 'white', color: 'var(--primary)', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: 'transform 0.2s' }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}
                       >
-                        <Award size={16} color="#fbbf24" /> Official Report Card (PDF)
+                        <Download size={16} /> Download PDF
                       </button>
                       <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.4rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -252,14 +173,6 @@ export default function StudentResults() {
             );
           })}
         </div>
-      )}
-
-      {activeReport && (
-        <ReportCardModal
-          studentResult={activeReport.studentResult}
-          batch={activeReport.batch}
-          onClose={() => setActiveReport(null)}
-        />
       )}
     </>
   );

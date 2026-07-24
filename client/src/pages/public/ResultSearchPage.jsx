@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { Search, Trophy, User, GraduationCap, CreditCard, ShieldCheck, Zap, BarChart3, HeadphonesIcon, FileSearch, Award } from 'lucide-react';
-import ReportCardModal from '../../components/ReportCardModal';
+import { Search, Trophy, User, GraduationCap, CreditCard, ShieldCheck, Zap, BarChart3, HeadphonesIcon, FileSearch, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CLASS_OPTIONS } from '../../utils/constants';
+import { generateReportCardPDF } from '../../utils/pdfGenerator';
 
 export default function ResultSearchPage() {
   const [form, setForm] = useState({ name: '', class: '', roll: '' });
@@ -17,7 +17,6 @@ export default function ResultSearchPage() {
   const [posClass, setPosClass] = useState('');
   const [posLoading, setPosLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [activeReport, setActiveReport] = useState(null);
 
   useEffect(() => { api.get('/school-info').then(r => setInfo(r.data.data || {})); }, []);
 
@@ -133,9 +132,20 @@ export default function ResultSearchPage() {
                   {results.map((r, i) => (
                     <div key={i} className="result-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', boxShadow: '0 20px 40px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
                       <div className="result-header" style={{ background: 'linear-gradient(135deg, rgba(79,70,229,0.05), rgba(79,70,229,0.02))', padding: '2rem', borderBottom: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: '0.8rem', opacity: 0.8, marginBottom: '0.25rem', color: 'var(--primary)', fontWeight: 600 }}>{r.examType} · {r.academicYear}</div>
-                        <h3 style={{ fontSize: '1.5rem', margin: '0.25rem 0' }}>{r.student.name}</h3>
-                        <div style={{ fontSize: '0.9rem', opacity: 0.85 }}>Class {r.student.class} · Roll {r.student.rollNumber}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                          <div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.8, marginBottom: '0.25rem', color: 'var(--primary)', fontWeight: 600 }}>{r.examType} · {r.academicYear}</div>
+                            <h3 style={{ fontSize: '1.5rem', margin: '0.25rem 0' }}>{r.student.name}</h3>
+                            <div style={{ fontSize: '0.9rem', opacity: 0.85 }}>Class {r.student.class} · Roll {r.student.rollNumber}</div>
+                          </div>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => generateReportCardPDF(r, info)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.1rem', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 8px 20px rgba(79,70,229,0.25)' }}
+                          >
+                            <Download size={16} /> Download Report Card (PDF)
+                          </button>
+                        </div>
                         <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginTop: '1.5rem', flexWrap: 'wrap' }}>
                           <div style={{ textAlign: 'center' }}>
                             <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit', color: 'var(--primary)' }}>{r.student.totalMarks}</div>
@@ -173,26 +183,8 @@ export default function ResultSearchPage() {
                           ))}
                         </div>
                       </div>
-
-                      <div style={{ padding: '0 2rem 2rem 2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem' }}>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => setActiveReport({ studentResult: r.student, batch: { title: r.title, examType: r.examType, academicYear: r.academicYear, class: r.student.class } })}
-                          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg, #0b1e36, #1e3a8a)', color: '#ffffff', fontWeight: 600, padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-md)', boxShadow: '0 4px 15px rgba(11,30,54,0.3)', border: '1px solid #f59e0b' }}
-                        >
-                          <Award size={18} color="#fbbf24" /> Download Official Report Card (PDF)
-                        </button>
-                      </div>
                     </div>
                   ))}
-
-                  {activeReport && (
-                    <ReportCardModal
-                      studentResult={activeReport.studentResult}
-                      batch={activeReport.batch}
-                      onClose={() => setActiveReport(null)}
-                    />
-                  )}
                 </>
               )}
 
