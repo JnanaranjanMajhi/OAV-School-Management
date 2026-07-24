@@ -71,7 +71,7 @@ router.post(
 // @access Public
 router.post('/google', async (req, res, next) => {
   try {
-    const { token } = req.body;
+    const { token, isRegistration, role, phone, class: studentClass, rollNumber, subject, qualification, experience, name: customName } = req.body;
     if (!token) return res.status(400).json({ success: false, message: 'Google token is required' });
 
     // Verify access token by calling Google's userinfo endpoint
@@ -89,16 +89,36 @@ router.post('/google', async (req, res, next) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      user = await User.create({
-        name,
-        email,
-        authProvider: 'google',
-        googleId,
-        role: 'student', // default
-        photo: picture,
-        isApproved: false
-      });
-      return res.status(201).json({ success: true, message: 'Account created. Please wait for admin approval.' });
+      if (isRegistration) {
+        const selectedRole = role && ['teacher', 'student'].includes(role) ? role : 'student';
+        user = await User.create({
+          name: customName?.trim() || name || 'Google User',
+          email: email.toLowerCase(),
+          authProvider: 'google',
+          googleId,
+          role: selectedRole,
+          class: selectedRole === 'student' ? (studentClass?.trim() || '') : '',
+          rollNumber: selectedRole === 'student' ? (rollNumber?.trim() || '') : '',
+          subject: selectedRole === 'teacher' ? (subject || '') : '',
+          qualification: selectedRole === 'teacher' ? (qualification?.trim() || '') : '',
+          experience: selectedRole === 'teacher' ? (experience?.trim() || '') : '',
+          phone: phone?.trim() || '',
+          photo: picture || '',
+          isApproved: false
+        });
+        return res.status(201).json({ success: true, message: 'Account created successfully! Please wait for admin approval.' });
+      } else {
+        return res.status(200).json({
+          success: true,
+          needsDetails: true,
+          googleData: {
+            googleId,
+            email,
+            name: name || '',
+            picture: picture || ''
+          }
+        });
+      }
     }
 
     // If local user logs in with Google, link accounts

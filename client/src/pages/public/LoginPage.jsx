@@ -89,6 +89,9 @@ export default function LoginPage() {
           toast.success(`Welcome back, ${result.name}!`);
           const path = result.role === 'admin' ? '/admin/dashboard' : result.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
           navigate(path);
+        } else if (result.needsDetails) {
+          toast.error('No account found with this Google account. Please register first.');
+          navigate('/register');
         } else {
           toast.success(result.message || 'Action completed.');
         }

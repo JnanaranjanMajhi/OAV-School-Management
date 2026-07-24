@@ -42,14 +42,14 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
-  const googleLogin = async (token) => {
-    const res = await api.post('/auth/google', { token });
+  const googleLogin = async (token, extraData = {}) => {
+    const res = await api.post('/auth/google', { token, ...extraData });
     if (res.data.user) {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       setUser(res.data.user);
       return res.data.user;
     }
-    return res.data; // might be registration pending approval msg
+    return res.data; // might be registration pending approval msg or needsDetails
   };
 
   const logout = async () => {

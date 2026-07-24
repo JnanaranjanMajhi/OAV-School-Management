@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useGoogleLogin } from '@react-oauth/google';
 import api from '../../api/axios';
+import Modal from '../../components/Modal';
 import {
   Eye, EyeOff, UserPlus, Users, BookOpen,
   User, Mail, Lock, Phone, Hash, BookMarked, Award, Clock,
@@ -12,13 +14,29 @@ import toast from 'react-hot-toast';
 import { CLASS_OPTIONS as CLASSES, SUBJECT_OPTIONS as SUBJECTS } from '../../utils/constants';
 
 export default function RegisterPage() {
-  const { user, register } = useAuth();
+  const { user, register, googleLogin } = useAuth();
   const navigate = useNavigate();
   const [role, setRole] = useState('student');
   const [step, setStep] = useState(1);
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Google Modal State
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
+  const [googleToken, setGoogleToken] = useState('');
+  const [googleInfo, setGoogleInfo] = useState(null);
+  const [googleForm, setGoogleForm] = useState({
+    name: '',
+    role: 'student',
+    phone: '',
+    class: '',
+    rollNumber: '',
+    subject: '',
+    qualification: '',
+    experience: '',
+  });
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   // OTP States
   const [emailState, setEmailState] = useState('idle'); // 'idle' | 'sent' | 'verified'
@@ -65,6 +83,78 @@ export default function RegisterPage() {
   }, [user, navigate]);
 
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
+
+  // Google OAuth Signup Handler
+  const handleGoogleSignUp = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      try {
+        const token = tokenResponse.access_token;
+        const result = await googleLogin(token);
+
+        if (result.name) {
+          toast.success(`Welcome back, ${result.name}!`);
+          const path = result.role === 'admin' ? '/admin/dashboard' : result.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+          navigate(path);
+        } else if (result.needsDetails) {
+          setGoogleToken(token);
+          setGoogleInfo(result.googleData);
+          setGoogleForm({
+            name: result.googleData.name || form.name || '',
+            role: role || 'student',
+            phone: form.phone || '',
+            class: form.class || '',
+            rollNumber: form.rollNumber || '',
+            subject: form.subject || '',
+            qualification: form.qualification || '',
+            experience: form.experience || '',
+          });
+          setShowGoogleModal(true);
+        } else if (result.message) {
+          toast.success(result.message);
+        }
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Google registration failed');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => toast.error('Google Sign-In failed')
+  });
+
+  const handleGoogleDetailsSubmit = async (e) => {
+    e.preventDefault();
+    if (!googleForm.name.trim()) return toast.error('Please enter your full name');
+    if (googleForm.role === 'student') {
+      if (!googleForm.class) return toast.error('Please select your class');
+      if (!googleForm.rollNumber.trim()) return toast.error('Please enter your roll number');
+    } else if (googleForm.role === 'teacher') {
+      if (!googleForm.subject) return toast.error('Please select your subject');
+    }
+
+    setGoogleSubmitting(true);
+    try {
+      const res = await googleLogin(googleToken, {
+        isRegistration: true,
+        name: googleForm.name.trim(),
+        role: googleForm.role,
+        phone: googleForm.phone.trim(),
+        class: googleForm.class,
+        rollNumber: googleForm.rollNumber.trim(),
+        subject: googleForm.subject,
+        qualification: googleForm.qualification.trim(),
+        experience: googleForm.experience.trim(),
+      });
+
+      toast.success(res.message || 'Account created successfully with Google! Please wait for admin approval.');
+      setShowGoogleModal(false);
+      navigate('/login');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to complete registration');
+    } finally {
+      setGoogleSubmitting(false);
+    }
+  };
 
   // ---- OTP Handlers ----
   const handleSendOtp = async (type) => {
@@ -164,8 +254,6 @@ export default function RegisterPage() {
         </Link>
       </div>
 
-
-
       <div className="login-container">
         <div className="login-card" style={{ maxWidth: '600px', padding: '2.5rem' }}>
           <div className="login-logo-center-wrapper">
@@ -176,6 +264,20 @@ export default function RegisterPage() {
           <div className="login-titles">
             <h1>Create Account</h1>
             <p>Join the Whispering Pines School Portal</p>
+          </div>
+
+          <button type="button" className="google-btn" onClick={handleGoogleSignUp} disabled={loading}>
+            <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+            Sign in with Google
+          </button>
+
+          <div className="login-divider">
+            <span>OR REGISTER WITH EMAIL</span>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -477,8 +579,7 @@ export default function RegisterPage() {
                   disabled={
                     loading ||
                     (form.confirmPassword !== '' && form.password !== form.confirmPassword) ||
-                    emailState !== 'verified' ||
-                    (form.phone && phoneState !== 'verified')
+                    emailState !== 'verified'
                   }
                 >
                   {loading ? (
@@ -507,6 +608,205 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+
+      {showGoogleModal && (
+        <Modal title="Complete Your Account Details" onClose={() => setShowGoogleModal(false)}>
+          <form onSubmit={handleGoogleDetailsSubmit}>
+            {googleInfo && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '0.75rem 1rem',
+                background: 'rgba(79, 70, 229, 0.06)',
+                borderRadius: '8px',
+                marginBottom: '1.25rem',
+                border: '1px solid rgba(79, 70, 229, 0.15)'
+              }}>
+                {googleInfo.picture ? (
+                  <img src={googleInfo.picture} alt="Google profile" style={{ width: 40, height: 40, borderRadius: '50%' }} />
+                ) : (
+                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                    {googleInfo.name?.[0] || 'G'}
+                  </div>
+                )}
+                <div style={{ overflow: 'hidden' }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Signed in with Google as</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                    {googleInfo.email}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Role selector */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text)' }}>
+                Select Account Type <span style={{ color: 'var(--danger)' }}>*</span>
+              </label>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '0.35rem',
+                background: 'rgba(0,0,0,0.03)',
+                borderRadius: '8px',
+                padding: '0.35rem',
+                border: '1px solid rgba(0,0,0,0.05)'
+              }}>
+                {[
+                  { val: 'student', icon: Users, label: 'Student' },
+                  { val: 'teacher', icon: BookOpen, label: 'Teacher' },
+                ].map(({ val, icon: Icon, label }) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setGoogleForm({ ...googleForm, role: val })}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                      padding: '0.6rem',
+                      borderRadius: '6px',
+                      border: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      background: googleForm.role === val ? 'var(--primary)' : 'transparent',
+                      color: googleForm.role === val ? 'white' : 'var(--text-muted)',
+                      boxShadow: googleForm.role === val ? '0 2px 8px rgba(79,70,229,0.3)' : 'none',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <Icon size={16} /> {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Full Name */}
+            <div className="login-field" style={{ marginBottom: '1rem' }}>
+              <label>Full Name <span style={{ color: 'var(--danger)' }}>*</span></label>
+              <div className="login-input-wrapper">
+                <User className="icon-left" size={18} />
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={googleForm.name}
+                  onChange={(e) => setGoogleForm({ ...googleForm, name: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Role specific fields */}
+            {googleForm.role === 'student' ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className="login-field">
+                  <label>Class <span style={{ color: 'var(--danger)' }}>*</span></label>
+                  <div className="login-input-wrapper">
+                    <BookMarked className="icon-left" size={18} />
+                    <select
+                      value={googleForm.class}
+                      onChange={(e) => setGoogleForm({ ...googleForm, class: e.target.value })}
+                      required
+                    >
+                      <option value="">Select class</option>
+                      {CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="login-field">
+                  <label>Roll Number <span style={{ color: 'var(--danger)' }}>*</span></label>
+                  <div className="login-input-wrapper">
+                    <Hash className="icon-left" size={18} />
+                    <input
+                      type="text"
+                      placeholder="e.g. 2024001"
+                      value={googleForm.rollNumber}
+                      onChange={(e) => setGoogleForm({ ...googleForm, rollNumber: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="login-field" style={{ marginBottom: '1rem' }}>
+                  <label>Subject <span style={{ color: 'var(--danger)' }}>*</span></label>
+                  <div className="login-input-wrapper">
+                    <BookOpen className="icon-left" size={18} />
+                    <select
+                      value={googleForm.subject}
+                      onChange={(e) => setGoogleForm({ ...googleForm, subject: e.target.value })}
+                      required
+                    >
+                      <option value="">Select your subject</option>
+                      {SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div className="login-field">
+                    <label>Qualification</label>
+                    <div className="login-input-wrapper">
+                      <Award className="icon-left" size={18} />
+                      <input
+                        type="text"
+                        placeholder="e.g. M.Sc, B.Ed"
+                        value={googleForm.qualification}
+                        onChange={(e) => setGoogleForm({ ...googleForm, qualification: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="login-field">
+                    <label>Experience</label>
+                    <div className="login-input-wrapper">
+                      <Clock className="icon-left" size={18} />
+                      <input
+                        type="text"
+                        placeholder="e.g. 5 years"
+                        value={googleForm.experience}
+                        onChange={(e) => setGoogleForm({ ...googleForm, experience: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Phone optional */}
+            <div className="login-field" style={{ marginBottom: '1.5rem' }}>
+              <label>Phone Number (Optional)</label>
+              <div className="login-input-wrapper">
+                <Phone className="icon-left" size={18} />
+                <input
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  value={googleForm.phone}
+                  onChange={(e) => setGoogleForm({ ...googleForm, phone: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setShowGoogleModal(false)}
+                disabled={googleSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={googleSubmitting}
+                style={{ minWidth: '150px' }}
+              >
+                {googleSubmitting ? <div className="spinner-sm spinner" style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: '#fff' }} /> : 'Complete Registration'}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }
