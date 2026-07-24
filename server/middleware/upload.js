@@ -159,17 +159,20 @@ const uploadExcel = multer({
   fileFilter: excelFilter,
 });
 
-const wrapMulter = (multerInstance) => {
+const wrapMulter = (multerInstance, isExcel = false) => {
   return {
     single: (field) => {
       const uploadMw = multerInstance.single(field);
       return (req, res, next) => {
         uploadMw(req, res, (err) => {
           if (err) return next(err);
-          if (req.file && req.file.path && !req.file.path.startsWith('http')) {
-            const norm = req.file.path.replace(/\\/g, '/');
-            if (norm.includes('/uploads/')) {
-              req.file.path = '/uploads/' + norm.split('/uploads/')[1];
+          if (req.file && req.file.path) {
+            req.file.absolutePath = req.file.path;
+            if (!isExcel && !req.file.path.startsWith('http')) {
+              const norm = req.file.path.replace(/\\/g, '/');
+              if (norm.includes('/uploads/')) {
+                req.file.path = '/uploads/' + norm.split('/uploads/')[1];
+              }
             }
           }
           next();
@@ -183,5 +186,5 @@ module.exports = {
   uploadImage: wrapMulter(uploadImage), 
   uploadFile: wrapMulter(uploadFile), 
   uploadAny: wrapMulter(uploadAny), 
-  uploadExcel: wrapMulter(uploadExcel) 
+  uploadExcel: wrapMulter(uploadExcel, true) 
 };

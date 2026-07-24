@@ -1,4 +1,28 @@
 const XLSX = require('xlsx');
+const path = require('path');
+const fs = require('fs');
+
+const resolveFilePath = (filePath) => {
+  if (!filePath) return '';
+  if (fs.existsSync(filePath)) return filePath;
+
+  const cleanPath = String(filePath).replace(/^[/\\]+/, '');
+  const candidate1 = path.join(__dirname, '..', cleanPath);
+  if (fs.existsSync(candidate1)) return candidate1;
+
+  const candidate2 = path.resolve(process.cwd(), cleanPath);
+  if (fs.existsSync(candidate2)) return candidate2;
+
+  return filePath;
+};
+
+const cleanupFile = (filePath) => {
+  try {
+    if (filePath && fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  } catch (e) {}
+};
 
 /**
  * Parse Excel file and extract student result data.
@@ -9,7 +33,9 @@ const XLSX = require('xlsx');
  * Returns array of student result objects.
  */
 const parseExcelResults = (filePath, className) => {
-  const workbook = XLSX.readFile(filePath);
+  const resolvedPath = resolveFilePath(filePath);
+  const workbook = XLSX.readFile(resolvedPath);
+  cleanupFile(resolvedPath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -94,7 +120,9 @@ const calculateGrade = (percentage) => {
 };
 
 const parseExcelStudents = (filePath, className) => {
-  const workbook = XLSX.readFile(filePath);
+  const resolvedPath = resolveFilePath(filePath);
+  const workbook = XLSX.readFile(resolvedPath);
+  cleanupFile(resolvedPath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -133,7 +161,9 @@ const parseExcelStudents = (filePath, className) => {
 };
 
 const parseExcelTeachers = (filePath) => {
-  const workbook = XLSX.readFile(filePath);
+  const resolvedPath = resolveFilePath(filePath);
+  const workbook = XLSX.readFile(resolvedPath);
+  cleanupFile(resolvedPath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
