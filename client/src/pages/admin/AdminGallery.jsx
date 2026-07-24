@@ -86,7 +86,7 @@ export default function AdminGallery() {
         <button className="btn btn-primary" onClick={openCreate} style={{ padding: '0.65rem 1rem', fontSize: '0.9rem', boxShadow: '0 8px 20px rgba(79,70,229,0.3)' }}><Plus size={18} /> Upload File</button>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', padding: '0.5rem', background: 'var(--bg-card)', borderRadius: '100px', display: 'inline-flex', border: '1px solid var(--border-light)' }}>
+      <div style={{ display: 'inline-flex', gap: '0.75rem', marginBottom: '2rem', padding: '0.5rem', background: 'var(--bg-card)', borderRadius: '100px', border: '1px solid var(--border-light)' }}>
         <button 
           className="btn"
           onClick={() => setActiveTab('Gallery')}

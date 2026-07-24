@@ -160,14 +160,12 @@ export default function RegisterPage() {
 
     // Basic format validation
     if (type === 'email' && !identifier.includes('@')) return toast.error('Please enter a valid email address');
-    if (type === 'phone' && identifier.length < 10) return toast.error('Please enter a valid phone number');
 
     setSendingOtp(type);
     try {
       const res = await api.post('/auth/send-otp', { type, identifier, purpose: 'register' });
       toast.success(res.data.message || `OTP sent to your ${type}`);
       if (type === 'email') { setEmailState('sent'); setEmailTimer(60); }
-      if (type === 'phone') { setPhoneState('sent'); setPhoneTimer(60); }
     } catch (err) {
       toast.error(err.response?.data?.message || `Failed to send OTP`);
     } finally {
@@ -176,17 +174,16 @@ export default function RegisterPage() {
   };
 
   const handleVerifyOtp = async (type) => {
-    const identifier = type === 'email' ? form.email : form.phone;
-    const otp = type === 'email' ? emailOtp : phoneOtp;
+    const identifier = form.email;
+    const otp = emailOtp;
 
     if (!otp || otp.length !== 6) return toast.error('Please enter the 6-digit OTP');
 
     setVerifyingOtp(type);
     try {
       const res = await api.post('/auth/verify-otp', { type, identifier, otp });
-      toast.success(res.data.message || `${type} verified successfully!`);
+      toast.success(res.data.message || `Email verified successfully!`);
       if (type === 'email') setEmailState('verified');
-      if (type === 'phone') setPhoneState('verified');
     } catch (err) {
       toast.error(err.response?.data?.message || `Invalid OTP`);
     } finally {
