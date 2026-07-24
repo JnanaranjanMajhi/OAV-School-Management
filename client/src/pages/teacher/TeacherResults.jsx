@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { Plus, Trash2, Save, ClipboardList, PlusCircle, MinusCircle, UploadCloud, Edit2, User, Hash, BookOpen, Layers, Type, Calendar, File as FileIcon, Users, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, Save, ClipboardList, PlusCircle, MinusCircle, UploadCloud, Edit2, User, Hash, BookOpen, Layers, Type, Calendar, File as FileIcon, Users, ChevronDown, Award } from 'lucide-react';
 import Modal from '../../components/Modal';
+import ReportCardModal from '../../components/ReportCardModal';
 import { CLASS_OPTIONS as CLASSES, SUBJECTS_BY_CLASS } from '../../utils/constants';
 import { useConfirm } from '../../context/ConfirmContext';
 
@@ -55,6 +56,7 @@ export default function TeacherResults() {
   const [uploading, setUploading] = useState(false);
   const [expandedBatches, setExpandedBatches] = useState({});
   const [filterClass, setFilterClass] = useState('All');
+  const [activeReport, setActiveReport] = useState(null);
 
   const load = () => api.get('/results').then(r => setItems(r.data.data || [])).finally(() => setLoading(false));
   const loadStudents = () => api.get('/users?role=student').then(r => setStudents(r.data.data || []));
@@ -342,9 +344,12 @@ export default function TeacherResults() {
                               </div>
                             </td>
                             <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                              <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                                <button className="btn btn-secondary btn-sm" onClick={() => openEdit(r)} style={{ padding: '0.4rem', borderRadius: 'var(--radius-sm)' }}><Edit2 size={14} /></button>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(r._id)} style={{ padding: '0.4rem', borderRadius: 'var(--radius-sm)' }}><Trash2 size={14} /></button>
+                              <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <button className="btn btn-secondary btn-sm" onClick={() => setActiveReport({ studentResult: { name: r.studentName, rollNumber: r.rollNumber, class: batch.class, subjects: r.subjects, totalMarks: r.totalMarks, maxTotal: r.maxTotal, percentage: r.percentage, grade: r.grade, position: r.position }, batch })} style={{ padding: '0.4rem 0.6rem', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '0.3rem', background: '#0b1e36', color: '#ffffff', border: '1px solid #f59e0b', borderRadius: 'var(--radius-sm)', fontWeight: 600 }} title="Download Official Report Card (PDF)">
+                                  <Award size={14} color="#fbbf24" /> Report Card
+                                </button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => openEdit(r)} style={{ padding: '0.45rem', borderRadius: 'var(--radius-sm)' }}><Edit2 size={14} /></button>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(r._id)} style={{ padding: '0.45rem', borderRadius: 'var(--radius-sm)' }}><Trash2 size={14} /></button>
                               </div>
                             </td>
                           </tr>
@@ -525,6 +530,14 @@ export default function TeacherResults() {
             </button>
           </div>
         </Modal>
+      )}
+
+      {activeReport && (
+        <ReportCardModal
+          studentResult={activeReport.studentResult}
+          batch={activeReport.batch}
+          onClose={() => setActiveReport(null)}
+        />
       )}
     </>
   );

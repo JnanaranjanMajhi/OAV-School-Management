@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { Search, Trophy, User, GraduationCap, CreditCard, ShieldCheck, Zap, BarChart3, HeadphonesIcon, FileSearch } from 'lucide-react';
+import { Search, Trophy, User, GraduationCap, CreditCard, ShieldCheck, Zap, BarChart3, HeadphonesIcon, FileSearch, Award } from 'lucide-react';
+import ReportCardModal from '../../components/ReportCardModal';
 import toast from 'react-hot-toast';
 import { CLASS_OPTIONS } from '../../utils/constants';
 
@@ -16,6 +17,7 @@ export default function ResultSearchPage() {
   const [posClass, setPosClass] = useState('');
   const [posLoading, setPosLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [activeReport, setActiveReport] = useState(null);
 
   useEffect(() => { api.get('/school-info').then(r => setInfo(r.data.data || {})); }, []);
 
@@ -171,8 +173,26 @@ export default function ResultSearchPage() {
                           ))}
                         </div>
                       </div>
+
+                      <div style={{ padding: '0 2rem 2rem 2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem' }}>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => setActiveReport({ studentResult: r.student, batch: { title: r.title, examType: r.examType, academicYear: r.academicYear, class: r.student.class } })}
+                          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg, #0b1e36, #1e3a8a)', color: '#ffffff', fontWeight: 600, padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-md)', boxShadow: '0 4px 15px rgba(11,30,54,0.3)', border: '1px solid #f59e0b' }}
+                        >
+                          <Award size={18} color="#fbbf24" /> Download Official Report Card (PDF)
+                        </button>
+                      </div>
                     </div>
                   ))}
+
+                  {activeReport && (
+                    <ReportCardModal
+                      studentResult={activeReport.studentResult}
+                      batch={activeReport.batch}
+                      onClose={() => setActiveReport(null)}
+                    />
+                  )}
                 </>
               )}
 

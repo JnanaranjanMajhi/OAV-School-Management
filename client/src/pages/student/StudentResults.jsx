@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { FileSpreadsheet, Trophy, TrendingUp, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileSpreadsheet, Trophy, TrendingUp, Download, ChevronDown, ChevronUp, Award } from 'lucide-react';
+import ReportCardModal from '../../components/ReportCardModal';
 
 export default function StudentResults() {
   const { user } = useAuth();
@@ -9,6 +10,7 @@ export default function StudentResults() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedResultId, setExpandedResultId] = useState(0);
+  const [activeReport, setActiveReport] = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -179,14 +181,15 @@ export default function StudentResults() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          generatePDF(result, overallPct, totalMarks, totalMax);
+                          setActiveReport({
+                            studentResult: { ...studentData, name: user?.name || studentData.name, rollNumber: studentData.rollNumber || user?.rollNumber, class: result.class || user?.class },
+                            batch: { title: result.title, examType: result.examType, academicYear: result.academicYear, class: result.class }
+                          });
                         }}
                         className="btn"
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', background: 'white', color: 'var(--primary)', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: 'transform 0.2s' }}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: '#0b1e36', color: '#ffffff', border: '1px solid #f59e0b', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(11,30,54,0.3)' }}
                       >
-                        <Download size={16} /> Download PDF
+                        <Award size={16} color="#fbbf24" /> Official Report Card (PDF)
                       </button>
                       <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.4rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -249,6 +252,14 @@ export default function StudentResults() {
             );
           })}
         </div>
+      )}
+
+      {activeReport && (
+        <ReportCardModal
+          studentResult={activeReport.studentResult}
+          batch={activeReport.batch}
+          onClose={() => setActiveReport(null)}
+        />
       )}
     </>
   );
