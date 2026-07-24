@@ -50,6 +50,25 @@ router.get('/search', async (req, res, next) => {
         rank = higherStudents + 1; // e.g. 0 students higher = Rank 1
       }
 
+      // Calculate real database attendance for this student
+      const Attendance = require('../models/Attendance');
+      const attendanceDocs = await Attendance.find({
+        'records.rollNumber': s.rollNumber
+      });
+      let totalDays = attendanceDocs.length;
+      let presentDays = 0;
+      attendanceDocs.forEach(doc => {
+        const rec = doc.records.find(r => String(r.rollNumber) === String(s.rollNumber));
+        if (rec && (rec.status === 'Present' || rec.status === 'Late')) {
+          presentDays += 1;
+        }
+      });
+      let realAttendance = s.attendance;
+      if (!realAttendance || realAttendance.trim() === '') {
+        const pct = totalDays > 0 ? ((presentDays / totalDays) * 100).toFixed(2) : '0.00';
+        realAttendance = `${presentDays} / ${totalDays} (${pct}%)`;
+      }
+
       return {
         batchTitle: batch ? batch.title : 'Unknown',
         examType: batch ? batch.examType : 'Unknown',
@@ -57,7 +76,8 @@ router.get('/search', async (req, res, next) => {
         class: batch ? batch.class : s.class,
         student: {
           ...s.toObject(),
-          position: rank
+          position: rank,
+          attendance: realAttendance
         },
       };
     }));
