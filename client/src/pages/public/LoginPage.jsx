@@ -84,19 +84,21 @@ export default function LoginPage() {
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
-        const result = await googleLogin(tokenResponse.access_token);
+        const result = await googleLogin(tokenResponse.access_token, { action: 'login' });
         if (result.name) {
           toast.success(`Welcome back, ${result.name}!`);
           const path = result.role === 'admin' ? '/admin/dashboard' : result.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
           navigate(path);
-        } else if (result.needsDetails) {
-          toast.error('No account found with this Google account. Please register first.');
-          navigate('/register');
         } else {
           toast.success(result.message || 'Action completed.');
         }
       } catch (err) {
-        toast.error(err.response?.data?.message || 'Google Login failed');
+        if (err.response?.status === 404) {
+          toast.error(err.response?.data?.message || 'No account found with this Google email. Please sign up first.');
+          navigate('/register');
+        } else {
+          toast.error(err.response?.data?.message || 'Google Login failed');
+        }
       } finally {
         setLoading(false);
       }

@@ -90,13 +90,9 @@ export default function RegisterPage() {
       setLoading(true);
       try {
         const token = tokenResponse.access_token;
-        const result = await googleLogin(token);
+        const result = await googleLogin(token, { action: 'signup' });
 
-        if (result.name) {
-          toast.success(`Welcome back, ${result.name}!`);
-          const path = result.role === 'admin' ? '/admin/dashboard' : result.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
-          navigate(path);
-        } else if (result.needsDetails) {
+        if (result.needsDetails) {
           setGoogleToken(token);
           setGoogleInfo(result.googleData);
           setGoogleForm({
@@ -135,6 +131,7 @@ export default function RegisterPage() {
     setGoogleSubmitting(true);
     try {
       const res = await googleLogin(googleToken, {
+        action: 'signup',
         isRegistration: true,
         name: googleForm.name.trim(),
         role: googleForm.role,

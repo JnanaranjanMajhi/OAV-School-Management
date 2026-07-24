@@ -69,9 +69,12 @@ router.post(
 // @route  POST /api/auth/google
 // @desc   Login or Register with Google
 // @access Public
+// @route  POST /api/auth/google
+// @desc   Login or Register with Google
+// @access Public
 router.post('/google', async (req, res, next) => {
   try {
-    const { token, isRegistration, role, phone, class: studentClass, rollNumber, subject, qualification, experience, name: customName } = req.body;
+    const { token, action, isRegistration, role, phone, class: studentClass, rollNumber, subject, qualification, experience, name: customName } = req.body;
     if (!token) return res.status(400).json({ success: false, message: 'Google token is required' });
 
     // Verify access token by calling Google's userinfo endpoint
@@ -85,15 +88,28 @@ router.post('/google', async (req, res, next) => {
     
     const payload = await response.json();
     const { sub: googleId, email, name, picture } = payload;
+    const normalizedEmail = email ? email.toLowerCase().trim() : '';
 
-    let user = await User.findOne({ email });
+    if (!normalizedEmail) {
+      return res.status(400).json({ success: false, message: 'Invalid Google account email' });
+    }
 
-    if (!user) {
+    let user = await User.findOne({ email: normalizedEmail });
+
+    // --- REGISTRATION FLOW ---
+    if (action === 'signup' || isRegistration) {
+      if (user) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'An account with this email address already exists. Please sign in instead.' 
+        });
+      }
+
       if (isRegistration) {
         const selectedRole = role && ['teacher', 'student'].includes(role) ? role : 'student';
         user = await User.create({
           name: customName?.trim() || name || 'Google User',
-          email: email.toLowerCase(),
+          email: normalizedEmail,
           authProvider: 'google',
           googleId,
           role: selectedRole,
@@ -106,19 +122,27 @@ router.post('/google', async (req, res, next) => {
           photo: picture || '',
           isApproved: false
         });
-        return res.status(201).json({ success: true, message: 'Account created successfully! Please wait for admin approval.' });
+        return res.status(201).json({ success: true, message: 'Account created successfully with Google! Please wait for admin approval.' });
       } else {
         return res.status(200).json({
           success: true,
           needsDetails: true,
           googleData: {
             googleId,
-            email,
+            email: normalizedEmail,
             name: name || '',
             picture: picture || ''
           }
         });
       }
+    }
+
+    // --- LOGIN FLOW ---
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with this Google email. Please sign up first.'
+      });
     }
 
     // If local user logs in with Google, link accounts
