@@ -23,7 +23,7 @@ The school fosters a culture of discipline, creativity, and leadership. With a d
   principalExperience: '25 Years',
   principalAchievements: 'State Award for Teachers (2018), National Award for Innovation in Educational Administration',
   principalBio: 'Dr. Rajesh K. Mohapatra has dedicated his life to the field of education. With over two decades of experience in school administration and teaching, he believes in a holistic approach to student development.',
-  establishedYear: '2020',
+  establishedYear: '2019',
   affiliation: 'CBSE',
   address: 'At- Sanagarh, Near Ranpur Fire Station, PO/Block- Ranpur',
   city: 'Ranpur, Nayagarh',

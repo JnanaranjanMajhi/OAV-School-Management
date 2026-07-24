@@ -48,7 +48,7 @@ export default function Footer({ info }) {
           <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <span>© {new Date().getFullYear()} {s.schoolName || 'Whispering Pines School'}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span>Established {s.establishedYear || '2020'} · {s.affiliation || 'CBSE'}</span>
+              <span>Established {s.establishedYear || '2019'} · {s.affiliation || 'CBSE'}</span>
               {s.website && <span>· <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Parent Organization: Whispering Pines Trust</a></span>}
             </span>
           </div>
