@@ -5,7 +5,7 @@ const ResultBatch = require('../models/ResultBatch');
 const StudentResult = require('../models/StudentResult');
 const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
-const { uploadFile } = require('../middleware/upload');
+const { uploadFile, uploadExcel } = require('../middleware/upload');
 const { parseExcelResults } = require('../utils/excelParser');
 const logActivity = require('../middleware/logger');
 
@@ -171,7 +171,7 @@ router.post(
   '/upload',
   protect,
   authorize('admin', 'teacher'),
-  uploadFile.single('file'),
+  uploadExcel.single('file'),
   logActivity('UPLOAD_RESULTS', 'results'),
   async (req, res, next) => {
     try {
@@ -185,7 +185,7 @@ router.post(
 
       if (req.file) {
         const mime = req.file.mimetype;
-        const filePath = req.file.path;
+        const filePath = req.file.absolutePath || req.file.path;
 
         if (
           mime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
@@ -193,7 +193,7 @@ router.post(
           mime === 'text/csv'
         ) {
           fileType = 'excel';
-          parsedData = parseExcelResults(filePath, cls);
+          parsedData = await parseExcelResults(filePath, cls);
 
           if (parsedData.length > 0) {
             // Fetch all students in the excel file by roll number

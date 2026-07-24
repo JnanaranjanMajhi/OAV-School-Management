@@ -132,8 +132,8 @@ router.post(
         return res.status(400).json({ success: false, message: 'Please upload an Excel or CSV file' });
       }
 
-      const filePath = req.file.path;
-      const parsedData = parseExcelStudents(filePath, cls);
+      const filePath = req.file.absolutePath || req.file.path;
+      const parsedData = await parseExcelStudents(filePath, cls);
 
       if (parsedData.length === 0) {
         return res.status(400).json({ success: false, message: 'No valid students found. Ensure Name and Email columns exist.' });
@@ -191,8 +191,8 @@ router.post(
         return res.status(400).json({ success: false, message: 'Please upload an Excel or CSV file' });
       }
 
-      const filePath = req.file.path;
-      const parsedData = parseExcelTeachers(filePath);
+      const filePath = req.file.absolutePath || req.file.path;
+      const parsedData = await parseExcelTeachers(filePath);
 
       if (parsedData.length === 0) {
         return res.status(400).json({ success: false, message: 'No valid teachers found. Ensure Name and Email columns exist.' });

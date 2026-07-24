@@ -24,6 +24,27 @@ const cleanupFile = (filePath) => {
   } catch (e) {}
 };
 
+const getWorkbook = async (filePath) => {
+  if (!filePath) throw new Error('File path is required for parsing Excel');
+
+  const strPath = String(filePath);
+
+  if (strPath.startsWith('http://') || strPath.startsWith('https://')) {
+    const response = await fetch(strPath);
+    if (!response.ok) {
+      throw new Error(`Failed to download Excel file from URL: ${response.statusText}`);
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return XLSX.read(buffer, { type: 'buffer' });
+  }
+
+  const resolvedPath = resolveFilePath(strPath);
+  const workbook = XLSX.readFile(resolvedPath);
+  cleanupFile(resolvedPath);
+  return workbook;
+};
+
 /**
  * Parse Excel file and extract student result data.
  *
@@ -32,10 +53,8 @@ const cleanupFile = (filePath) => {
  *
  * Returns array of student result objects.
  */
-const parseExcelResults = (filePath, className) => {
-  const resolvedPath = resolveFilePath(filePath);
-  const workbook = XLSX.readFile(resolvedPath);
-  cleanupFile(resolvedPath);
+const parseExcelResults = async (filePath, className) => {
+  const workbook = await getWorkbook(filePath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -119,10 +138,8 @@ const calculateGrade = (percentage) => {
   return 'F';
 };
 
-const parseExcelStudents = (filePath, className) => {
-  const resolvedPath = resolveFilePath(filePath);
-  const workbook = XLSX.readFile(resolvedPath);
-  cleanupFile(resolvedPath);
+const parseExcelStudents = async (filePath, className) => {
+  const workbook = await getWorkbook(filePath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -160,10 +177,8 @@ const parseExcelStudents = (filePath, className) => {
   return students;
 };
 
-const parseExcelTeachers = (filePath) => {
-  const resolvedPath = resolveFilePath(filePath);
-  const workbook = XLSX.readFile(resolvedPath);
-  cleanupFile(resolvedPath);
+const parseExcelTeachers = async (filePath) => {
+  const workbook = await getWorkbook(filePath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const rawData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
