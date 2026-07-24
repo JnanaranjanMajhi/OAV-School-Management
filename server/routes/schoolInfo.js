@@ -52,7 +52,13 @@ router.get('/', async (req, res, next) => {
   try {
     let info = await SchoolInfo.findOne();
     if (!info) info = await SchoolInfo.create({});
-    res.json({ success: true, data: info });
+
+    const User = require('../models/User');
+    const totalStudents = await User.countDocuments({ role: 'student' });
+
+    const data = info.toObject();
+    data.totalStudents = totalStudents;
+    res.json({ success: true, data });
   } catch (error) {
     next(error);
   }

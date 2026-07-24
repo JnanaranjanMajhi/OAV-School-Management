@@ -101,7 +101,7 @@ export default function HomePage() {
                 <div className="stat-item">
                   <div className="stat-icon" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}><Users size={24} /></div>
                   <div>
-                    <div className="stat-value">1000+</div>
+                    <div className="stat-value">{info.totalStudents !== undefined ? `${info.totalStudents}+` : '100+'}</div>
                     <div className="stat-label">STUDENTS</div>
                   </div>
                 </div>
